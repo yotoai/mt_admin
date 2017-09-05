@@ -1,0 +1,106 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5shiv.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<![endif]-->
+<link href="__PUBLIC__/css/H-ui.min.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/css/H-ui.admin.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/lib/icheck/icheck.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/lib/Hui-iconfont/1.0.7/iconfont.css" rel="stylesheet" type="text/css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>订单发货</title>
+<meta name="keywords" content="萌田网络后台,萌田网络管理系统模,萌田网络公司">
+<meta name="description" content="">
+</head>
+<body>
+<article class="page-container" style="padding:20px;margin:0 auto;">
+	<form class="form form-horizontal" id="form-admin-add">
+	<div class="row cl" style="text-align:center;">
+		<label class="form-label col-xs-4 col-sm-3">快递公司：</label>
+		<div class="formControls col-xs-8 col-sm-9"> <span class="select-box" style="width:163px;">
+			<select class="select" name="mailname" size="1" data-required errmsg="请选择快递！" >
+				<option value="0">超级管理员</option>
+				<option value="1">总编</option>
+				<option value="2">栏目主辑</option>
+				<option value="3">栏目编辑</option>
+			</select>
+			</span> </div>
+	</div>
+	<div class="row cl" style="text-align:center;">
+		<label class="form-label col-xs-4 col-sm-3">快递单号：</label>
+		<div class="formControls col-xs-8 col-sm-9">
+			<input type="text" class="input-text" value="" placeholder="" id="" name="mailnum" data-required errmsg="请输入快递单号！" />
+			<input type="hidden" class="input-text" value="{$oid}" placeholder="" id="" name="id" data-required errmsg="订单ID不能为空！" />
+		</div>
+	</div>
+	<div class="row cl" style="text-align:center;">
+		<div class="col-xs-8 col-sm-9 col-xs-offset-5 col-sm-offset-4">
+			<input class="btn btn-primary radius" type="button" id="commit" value="&nbsp;&nbsp;确 定&nbsp;&nbsp;">
+		</div>
+	</div>
+	</form>
+</article>
+<script type="text/javascript" src="__PUBLIC__/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.form.js"></script>
+<script type="text/javascript" src="__PUBLIC__/lib/layer/2.1/layer.js"></script> 
+<script type="text/javascript" src="__PUBLIC__/lib/icheck/jquery.icheck.min.js"></script> 
+<script type="text/javascript" src="__PUBLIC__/js/H-ui.js"></script> 
+<script type="text/javascript" src="__PUBLIC__/js/H-ui.admin.js"></script> 
+<script type="text/javascript">
+	$("#commit").click(function(){
+		var f = true;
+		$("*[data-required]").each(function(){
+			if($.trim($(this).val()) == '')
+			{
+				layer.msg($(this).attr("errmsg"),{icon:0,time:1500});
+				f = false;
+				return false;
+			}
+		});
+		if(f == false)
+		{
+			return false;
+		}
+		$.ajax({
+			type:"post",
+			url:"{:U('Orders/ordersSend')}",
+			data:$("form").serialize(),
+			BeforeSend:function(){
+				$(this).attr("disabled",true);
+			},
+			success:function(data){
+				if(data.flag == true)
+				{
+					layer.msg(data.msg,{icon:1,time:1500});
+                	setTimeout(function(){
+	                    parent.location.reload();
+	                },1400);
+					return false;
+				}
+				else if(data.flag == false)
+				{
+					layer.msg(data.msg,{icon:0,time:1500});
+					return false;
+				}
+				else
+				{
+					layer.msg("未知错误！",{icon:0,time:1500});
+					return false;
+				}
+			}
+		});
+	});
+</script> 
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

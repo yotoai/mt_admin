@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+ <html>
+ <head>
+ 	<title>YoToAi</title>
+    <meta charset="utf-8">
+    <meta name="keywords" content="yotoai,YOTOAI" />
+    <meta name="description" content="yotoai是我的个人测试网站" />
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+ 	<style type="text/css">
+		*{
+			padding: 0;
+			margin: 0 auto;
+		}
+        body, html {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+        #allmap{
+            width: 50%;
+            height: 50%;
+        }
+ 	</style>
+    <script type="text/javascript" src="__PUBLIC__/js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=aFVGF3EuNjByMUekzZFjRNwwC9MYwtMI"></script>
+ </head>
+ <body>
+ <div style="margin-top:50px;">
+    <form action="{:U('Index/makeQRcode')}" method="post">
+        二维码数据:&nbsp;<input name="data" value="" required/>&nbsp;
+        容错率:&nbsp;<select name="level">
+            <option value="L">L - smallest</option>
+            <option value="M">M</option>
+            <option value="Q">Q</option>
+            <option value="H">H - best</option>
+        </select>&nbsp;
+        尺寸:&nbsp;
+        <select name="size" style="width:50px;">
+        
+			<for start="1" end="11">
+	      		<option value='{$i}'>{$i}</option>
+	        </for>
+   		</select>&nbsp;
+        <input type="button" value="点击生成" onclick="subqr();">
+    </form>
+
+    <form action="{:U('Index/addCookie')}" method="post">
+    	用户：<input type="text" name="name">
+    	密码：<input type="password" name="pass">
+    	是否记住：<input type="checkbox" name="remember" value="1">
+    	<input type="submit" name="sub" value="提交">
+    </form>
+<script type="text/javascript">
+	$(function(){
+		$.ajax({
+			url:"{:U('Index/getCookie')}",
+			success:function(data){
+				console.log(data);
+				if(data.name !== '' && data.pass !== ''){
+					$("input[name='name']").val(data.name);
+					$("input[name='pass']").val(data.pass);
+				}
+			}
+		});
+	});
+
+</script>
+    <hr/>
+
+
+        <div id="qr"></div>
+</div>
+    <div id="allmap"></div>
+
+<script type="text/javascript">
+    // 百度地图API功能
+    var map = new BMap.Map("allmap");
+    map.centerAndZoom("赣州",12);  //初始化地图,设置城市和地图级别。
+    var pointA = new BMap.Point({$lng},{$lat});  // 创建点坐标A--大渡口区
+    var pointB = new BMap.Point(114.962283,25.853374);  // 创建点坐标B--江北区
+    // alert('从你到我的距离是：'+(map.getDistance(pointA,pointB)).toFixed(2)+' 米。');  //获取两点距离,保留小数点后两位
+    $('#qr').append('从你到我的距离是：'+(map.getDistance(pointA,pointB)).toFixed(2)+' 米。');  //获取两点距离,保留小数点后两位
+    var polyline = new BMap.Polyline([pointA,pointB], {strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5});  //定义折线
+    map.addOverlay(polyline);     //添加折线到地图上
+</script>
+
+    <footer style="width:100%;border-top:1px solid #ccc;padding-top:20px;position:absolute;bottom:0px;">
+    	友情链接：<a href="//m.kuaidi100.com" target="_blank">快递查询</a>
+    </footer>
+
+<script type="text/javascript">
+     function subqr()
+     {
+        var data = $("input[name='data']").val();
+        var level = $("select[name='level']").val();
+        var size = $("select[name='size']").val();
+        console.log(data);
+        if(data == ''){
+            alert('请输入数据！');
+        }else{
+            $.ajax({
+                type:'post',
+                url:"{:U('Index/makeQRcode')}",
+                data:'data='+data+'&level='+level+'&size='+size,
+                success:function(filename){
+                    console.log(filename);
+                    $("#qr").empty();
+                    $("#qr").append("<img src='"+filename+"' />");
+                }
+            })
+        }
+     }
+ </script>
+ </body>
+ </html> 

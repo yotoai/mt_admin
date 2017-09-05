@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>手机注册</title>
+	<script type="text/javascript" src="__PUBLIC__/js/jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="__PUBLIC__/js/jquery.sha1.js"></script>
+</head>
+<body>
+	<div>
+		<form action="{:U('Reg/doReg')}" method="post">
+			手机号码：<input type="text" name="num">
+			登录密码：<input type="password" name="pass">
+			验证码：<input type="text" name="code">
+			<a id="code" href="javascript:;" onclick="getCode();">获取验证码</a><br>
+			<a id="sub" href="javascript:;" onclick="sub();">注册</a>
+		</form>
+	</div>
+
+		
+
+
+
+
+
+	<script type="text/javascript">
+		function getCode()
+		{
+			var num = $("input[name='num']").val();
+			$.ajax({
+				type:"post",
+				url:"{:U('Reg/doSendSms')}",
+				data:"num="+num,
+				success:function(data){
+					$("#sub").attr('onclick','sub("'+ data +'")');
+					$('#code').text('已发送');
+				},
+				dataType:'json',
+			});
+		}
+
+		function sub(code)
+		{
+			var num = $("input[name='num']").val();
+			var pass = $("input[name='pass']").val();
+			var ucode = $.sha1('"'+ $("input[name='code']").val() +'"');
+			if(!(/^1[3|4|5|7|8]\d{9}$/.test(num)))
+			{ 
+				alert("手机号码有误，请重填"); 
+				return false; 
+			}//else if(code !== ucode){
+			// 	alert('验证码错误');
+			// 	return false;
+			// }
+			else{
+				alert('注册成功1');
+				$('form').submit();
+			}
+		}
+
+	</script>
+</body>
+</html>

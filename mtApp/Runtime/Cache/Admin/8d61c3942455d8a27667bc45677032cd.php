@@ -1,0 +1,106 @@
+<?php if (!defined('THINK_PATH')) exit();?>﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link href="/mtadmin/Public/css/H-ui.min.css" rel="stylesheet" type="text/css" />
+<link href="/mtadmin/Public/css/H-ui.admin.css" rel="stylesheet" type="text/css" />
+<link href="/mtadmin/Public/css/style.css" rel="stylesheet" type="text/css" />
+
+<link href="/mtadmin/Public/lib/Hui-iconfont/1.0.7/iconfont.css" rel="stylesheet" type="text/css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]--><title>客户消息</title>
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 客户消息 <a class="btn btn-success radius r mr-20" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="pd-20">
+  <table class="table table-border table-bordered table-bg table-hover table-sort">
+    <thead>
+      <tr class="text-c">
+        <th width="30">ID</th>
+        <th width="80">客户</th>
+        <th>公司</th>
+        <th width="15%">电话</th>
+        <th width="120">Email</th>
+        <th width="180">需求</th>
+        <th width="120">发送时间</th>
+        <th width="40">操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <?php if(is_array($msgList)): foreach($msgList as $key=>$val): ?><tr class="text-c">
+        <td><?php echo ($val["id"]); ?></td>
+        <td><?php echo ($val["name"]); ?></td>
+        <td><?php echo ($val["company"]); ?></td>
+        <td><?php echo ($val["tel"]); ?></td>
+        <td><?php echo ($val["email"]); ?></td>
+        <td><?php echo ($val["require"]); ?></td>
+        <td><?php echo (date("Y-m-d H:i:s",$val["addtime"])); ?></td>
+        <td> <a title="删除" href="javascript:;" onclick="msg_del(this,<?php echo ($val["id"]); ?>)" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
+      </tr><?php endforeach; endif; ?>
+    </tbody>
+  </table>
+
+</div>
+<script type="text/javascript" src="/mtadmin/Public/lib/jquery/1.9.1/jquery.min.js"></script> 
+<script type="text/javascript" src="/mtadmin/Public/lib/Validform/5.3.2/Validform.min.js"></script>
+<script type="text/javascript" src="/mtadmin/Public/lib/datatables/1.10.0/jquery.dataTables.min.js"></script> 
+<script type="text/javascript" src="/mtadmin/Public/lib/layer/2.1/layer.js"></script><script type="text/javascript" src="/mtadmin/Public/lib/laypage/1.2/laypage.js"></script> 
+<script type="text/javascript" src="/mtadmin/Public/js/H-ui.js"></script> 
+<script type="text/javascript" src="/mtadmin/Public/js/H-ui.admin.js"></script> 
+<script type="text/javascript">
+
+$('.table-sort').dataTable({
+	//"lengthMenu":false,//显示数量选择 
+	//"bFilter": false,//过滤功能
+	//"bPaginate": false,//翻页信息
+	//"bInfo": false,//数量信息
+	"aaSorting": [[ 1, "desc" ]],//默认第几个排序
+	"bStateSave": true,//状态保存
+	"aoColumnDefs": [
+	  //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
+	  {"orderable":false,"aTargets":[0,7]}// 制定列不参与排序
+	]
+});
+
+/*日志-删除*/
+function msg_del(obj,id){
+  layer.confirm('确认要删除吗？',function(index){  
+    $.ajax({
+        type:"post",
+        url:"<?php echo U('System/delMsg');?>",
+        data:"id="+id,
+        success:function(data){
+          //console.log(data);
+          if(data.flag == true){ 
+            $(obj).parents("tr").remove();
+            layer.msg(data.msg,{icon:1,time:1000});
+            location.replace(location.href);
+            return false;
+          }else if(data.flag == false){ 
+            layer.msg(data.msg,{icon:5,time:1000});
+            return false;
+          }else{
+            layer.msg('未知错误!',{icon:5,time:1000});
+            return false;
+          }
+        },
+        dataType:"json"
+      });
+  });
+}
+</script>
+<script>
+</script>
+</body>
+</html>

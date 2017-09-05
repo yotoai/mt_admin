@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<script type="text/javascript" src="__PUBLIC__/js/jquery-1.9.1.min.js"></script>
+	<title>发邮件</title>
+</head>
+<body>
+	<form action="{:U('Reg/doReg')}" method="post">
+		邮箱：<input type="email" name="mail" required>
+		登录密码：<input type="password" name="pass">
+		<a id="sub" href="javascript:;" onclick="sub();">注册</a>
+	</form>
+
+	<script type="text/javascript">
+		function sub()
+		{
+			var mail = $("input[name='mail']").val();
+			console.log(mail);
+			$.ajax({
+				type:'post',
+				url:"{:U('Mailer/sendMail')}",
+				data:'mail='+mail,
+				success:function(){
+					alert('邮件已发送，点击链接完成注册');
+				}
+			})
+		}
+	</script>
+</body>
+</html>

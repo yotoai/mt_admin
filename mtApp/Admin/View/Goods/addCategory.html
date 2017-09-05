@@ -1,0 +1,117 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link href="__PUBLIC__/css/H-ui.min.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/css/H-ui.admin.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/lib/icheck/icheck.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/lib/Hui-iconfont/1.0.7/iconfont.css" rel="stylesheet" type="text/css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>添加产品分类</title>
+</head>
+<body>
+<div class="pd-20">
+  <form action="{:U(Goods/addCategory)}" method="post" class="form form-horizontal" id="form-user-add" enctype="multipart/form-data">
+      <div class="row cl cate_select">
+      <label class="form-label col-2">父类节点：</label>
+      <div class="formControls col-2"> <span class="select-box">
+        <select name="pid" class="select">
+          <option value="0">———请选择———</option>
+          <foreach name="typeList" item="val">
+            <option value="{$val.id}">{$val.classify}</option>
+          </foreach>
+        </select>
+        </span>
+      </div>
+      <span class="c-red ts">不选将默认为顶级类</span>
+    </div>
+    <div class="row cl">
+      <label class="form-label col-2"><span class="c-red">*</span>分类名称：</label>
+      <div class="formControls col-5">
+        <input type="text" class="input-text" value="" placeholder="" id="user-name" name="classify" required />
+      </div>
+      <div class="col-5"> </div>
+    </div>
+      <div class="row cl">
+      <label class="form-label col-2">缩略图：</label>
+      <div class="formControls col-10">
+        <span class="btn-upload form-group">
+           <input class="input-text upload-url radius" type="text" name="img" id="uploadfile-1" readonly><a href="javascript:void();" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe642;</i> 浏览文件</a>
+            <input type="file" multiple name="img" class="input-file">
+        </span>
+      </div>
+    </div>
+    <div class="row cl">
+      <label class="form-label col-2">备注：</label>
+      <div class="formControls col-5">
+        <textarea name="des" cols="" rows="" class="textarea"  placeholder="说点什么...最少输入10个字符" datatype="*10-100" dragonfly="true" nullmsg="备注不能为空！" onKeyUp="textarealength(this,100)"></textarea>
+        <p class="textarea-numberbar"><em class="textarea-length">0</em>/100</p>
+      </div>
+      <div class="col-5"> </div>
+    </div>
+    <div class="row cl">
+      <div class="col-9 col-offset-2">
+        <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;" />
+        <button onClick="layer_close();" class="btn btn-default radius" type="button">&nbsp;&nbsp;取消&nbsp;&nbsp;</button>
+      </div>
+    </div>
+  </form>
+</div>
+<script type="text/javascript" src="__PUBLIC__/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/jquery.form.js"></script>
+<script type="text/javascript" src="__PUBLIC__/lib/icheck/jquery.icheck.min.js"></script> 
+<script type="text/javascript" src="__PUBLIC__/lib/Validform/5.3.2/Validform.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/lib/layer/2.1/layer.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/H-ui.js"></script> 
+<script type="text/javascript" src="__PUBLIC__/js/H-ui.admin.js"></script>
+<script type="text/javascript">
+$(function(){
+	$('.skin-minimal input').iCheck({
+		checkboxClass: 'icheckbox-blue',
+		radioClass: 'iradio-blue',
+		increaseArea: '20%'
+	});
+	
+	$("#form-user-add").Validform({
+		  tiptype:2,
+      callback:function(form){
+          $("form").ajaxSubmit({
+              type:"post",
+              url:"{:U('Goods/addCategory')}",
+              beforeSubmit:function(){
+                  $("#subCate").attr("disabled",true);
+              },
+              success:function(data){
+                  if(data.flag == true)
+                  {
+                      layer.msg(data.msg,{icon:1,time:1500});
+                      setTimeout(function(){
+                          parent.location.reload();
+                      },1400);
+                      return false;
+                  }else if(data.flag == false){
+                      layer.msg(data.msg,{icon:0,time:1500});
+                      $("#subCate").attr("disabled",false);
+                      return false;
+                  }
+              }
+          });
+          return false;
+      }
+  });
+});
+</script>
+</body>
+</html>

@@ -7,81 +7,63 @@ class AdminController extends BaseController
 	public function _initialize()
 	{
 		parent::_initialize();
+		$this->visitAuth();
 		$this->Grade = D("grade");
 	}
 
 	public function index()
 	{
-		$userList = $this->User->getUserlist();
-		if($userList){
-			foreach($userList as $key=>$val){
-			    $grade = $this->User->getGrade($val['username']);
-	            if(!$grade){
-	                $map = "查询用户角色信息失败！";
-	                $userList[$key]['grade'] = $map;
-	            }else{
-	                $userList[$key]['grade'] = $grade;
-	            }
-			}
-			$this->assign('userList',$userList);
-			$this->display();
-			exit();
-		}else{
-			$this->assign('userList',$userList);
-			$this->display();
-			exit();
+		if(IS_AJAX){
+			$userList = $this->User->getUserlist(I('get.'));
+			$this->ajaxReturn($userList);
 		}
+		$this->display();
 	}
 
 	public function addAdmin()
 	{	
-		if(IS_POST){
-			$username = I('post.username','');
-			$password = I('post.password','');
-			$username = trim($username);
-			$password = trim($password);
-			if(empty($username)){
-				$map['flag'] = false;
-				$map['msg'] = '用户名不能为空！';
-				$this->ajaxReturn($map);
-				exit();
-			}
-			if(empty($password)){
-				$map['flag'] = false;
-				$map['msg'] = '密码不能为空！';
-				$this->ajaxReturn($map);
-				exit();
-			}
-			$res = $this->User->existUserName($username);
-			if($res){
-				$map['flag'] = false;
-				$map['msg'] = '用户名已存在！';
-				$this->ajaxReturn($map);
-				exit();
-			}else{
-				$data['username'] = $username;
-				$data['password'] = md5($password);
-				$data['telephone'] = I('post.telephone');
-				$data['email'] = I("post.email");
-				$data['grade'] = I('post.grade');
-				$data['des'] = I('post.des');
-				$data['addtime'] = time();
-				$aff = $this->User->addUser($data);
-				if($aff){
-					$map['flag'] = true;
-					$map['msg'] = '保存成功！';
-					$this->ajaxReturn($map);
-					exit();
-				}else{
+		if(IS_POST)
+		{
+			if($this->User->create())
+			{
+				$this->User->startTrans();
+				$aff = $this->User->add();
+				if($aff)
+				{
+					$data['uid'] = $aff;
+					$data['group_id'] = I('post.role');
+					$aff = M('auth_group_access')->add($data);
+					if($aff)
+					{
+						$this->User->commit();
+						$map['flag'] = true;
+						$map['msg'] = '保存成功！';
+						$this->ajaxReturn($map);
+					}
+					else
+					{
+						$this->rollback();
+						$map['flag'] = false;
+						$map['msg'] = '保存失败！';
+						$this->ajaxReturn($map);
+					}
+				}
+				else
+				{
+					$this->User->rollback();
 					$map['flag'] = false;
 					$map['msg'] = '保存失败！';
 					$this->ajaxReturn($map);
-					exit();
 				}
+			}
+			else
+			{
+				$map['flag'] = false;
+				$map['msg'] = $this->User->getError();
+				$this->ajaxReturn($map);
 			}	
 		}else{
-			$gradeList = $this->Grade->getGradelist();
-			$this->assign("gradeList",$gradeList);
+			$this->assign("rolelist",M('auth_group')->field('id,title')->select());
 			$this->display();
 		}
 	}
@@ -110,51 +92,92 @@ class AdminController extends BaseController
 		}
 	}
 
+	// 编辑用户基本信息
 	public function editAdmin()
 	{
-		if(IS_POST){
-			$id = I('post.id','');
-			if(empty($id)){
+		if(IS_POST)
+		{
+			if(!$this->User->create())
+			{
 				$map['flag'] = false;
-				$map['msg'] = '这个用户出了问题！';
+				$map['msg']  = $this->User->getError();
 				$this->ajaxReturn($map);
-				exit();
 			}
-			$data = I('post.');
-			$aff = $this->User->checkPassword($id,I('post.password'));
-			if($aff){
-				$data['password'] = $aff;
-			}else{
-				$data['password'] = md5(I('post.password'));
+			else
+			{
+				$this->User->startTrans();
+				$where['id'] = I('post.id/d');
+				if($this->User->where($where)->save() !== false)
+				{
+					$wheres['uid'] = I('post.id/d');
+					$data['group_id'] =I('post.role');
+					if(M('auth_group_access')->where($wheres)->save($data) !== false)
+					{
+						$this->User->commit();
+						$map['flag'] = true;
+						$map['msg'] = '编辑成功';
+						$this->ajaxReturn($map);
+					}
+					else{
+						$this->User->rollback();
+						$map['flag'] = false;
+						$map['msg'] = '编辑失败';
+						$this->ajaxReturn($map);
+					}
+				}
+				else{
+					$this->User->rollback();
+					$map['flag'] = false;
+					$map['msg'] = '编辑失败';
+					$this->ajaxReturn($map);
+				}
 			}
-			$aff = $this->User->saveUser($id,$data);
-			if($aff){
-				$map['flag'] = true;
-				$map['msg'] = '保存成功';
-				$this->ajaxReturn($map);
-				exit();
-			}else{
-				$map['flag'] = false;
-				$map['msg'] = '保存失败';
-				$map['data'] = $data;
-				$this->ajaxReturn($map);
-				exit();
-			}
-		}else{
-			$id = I('get.id','');
-			if(empty($id)){
-				echo '<p style="color:red;text-align:ccenter;">这个用户不存在！</p>';
-				exit();
-			}else{
-				$data['id'] = $id;
-			}
-			$adminList = $this->User->getOneuserinfo($data);
-			//dump($adminList);
-			$gradeList = $this->Grade->getGradelist();
-			$this->assign("gradeList",$gradeList);
-			$this->assign('adminList',$adminList);
+		}
+		else
+		{
+			$data['id'] = I('get.id','');
+			$aList = $this->User->findUserInfo($data);
+			$this->assign("rolelist",M('auth_group')->field('id,title')->select());
+			$this->assign('adminList',$aList);
 			$this->display('edit');
 		}
+	}
+
+	// 重置密码
+	public function resetPassWord()
+	{
+		if(!$this->User->create())
+		{
+			$map['flag'] = false;
+			$map['msg']  = $this->User->getError();
+			$this->ajaxReturn($map);
+		}
+		else
+		{
+			$where['id'] = I('post.id/d');
+			if($this->User->where($where)->save() !== false)
+			{
+				$map['flag'] = true;
+				$map['msg'] = '编辑成功';
+				$this->ajaxReturn($map);
+			}else{
+				$map['flag'] = false;
+				$map['msg'] = '编辑失败';
+				$this->ajaxReturn($map);
+			}
+		}
+	}
+
+	public function randPassWord( $length = 8 )
+	{
+		// 密码字符集，可任意添加你需要的字符
+		$chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+		$password = '';
+		for($i = 0; $i < $length; $i++ )
+		{
+			$password .= $chars[mt_rand(0,strlen($chars) - 1)];
+		}
+		$this->ajaxReturn($password);
 	}
 
 	public function upStatus()
@@ -162,21 +185,18 @@ class AdminController extends BaseController
 		$id = I('post.id','');
 		if(empty($id)){
 			$map['flag'] = false;
-			$map['msg'] = '这个用户出了问题！';
+			$map['msg'] = '未知用户！';
 			$this->ajaxReturn($map);
-			exit();
 		}
 		$aff = $this->User->upStatus($id);
 		if($aff){
 			$map['flag'] = true;
-			$map['msg'] = '已禁用~！';
+			$map['msg'] = '操作成功！';
 			$this->ajaxReturn($map);
-			exit();
 		}else{
 			$map['flag'] = false;
-			$map['msg'] = '禁用失败！';
+			$map['msg'] = '操作失败！';
 			$this->ajaxReturn($map);
-			exit();
 		}
 	}
 
@@ -187,11 +207,9 @@ class AdminController extends BaseController
 		if($res){
 			$map['flag'] = false;
 			$this->ajaxReturn($map);
-			exit();
 		}else{
 			$map['flag'] = true;
 			$this->ajaxReturn($map);
-			exit();
 		}
 	}
 }

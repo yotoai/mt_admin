@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit();?>﻿<!--_meta 作为公共模版分离出去-->
+﻿<!--_meta 作为公共模版分离出去-->
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -13,17 +13,17 @@
 <script type="text/javascript" src="lib/html5shiv.js"></script>
 <script type="text/javascript" src="lib/respond.min.js"></script>
 <![endif]-->
-<link rel="stylesheet" type="text/css" href="/mtadmin/Public/css/H-ui.min.css" />
-<link rel="stylesheet" type="text/css" href="/mtadmin/Public/css/H-ui.admin.css" />
-<link href="/mtadmin/Public/lib/Hui-iconfont/1.0.7/iconfont.css" rel="stylesheet" type="text/css" />
-<link rel="stylesheet" type="text/css" href="/mtadmin/Public/css/style.css" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/H-ui.admin.css" />
+<link href="__PUBLIC__/lib/Hui-iconfont/1.0.7/iconfont.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/css/style.css" />
 <!--[if IE 6]>
 <script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
 <script>DD_belatedPNG.fix('*');</script>
 <![endif]-->
 <!--/meta 作为公共模版分离出去-->
 
-<title>添加权限-萌田网络</title>
+<title>编辑权限-萌田网络</title>
 <meta name="keywords" content="崇义建站,微信开发,网站优化,萌田网络">
 <meta name="description" content="萌田网络科技后台管理系统，萌田网路科技是一件专注网络，网站开发的服务商">
 </head>
@@ -33,21 +33,30 @@
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>权限名称：</label>
 			<div class="formControls col-xs-5 col-sm-6">
-				<input type="text" data-required='true' class="input-text" value="" placeholder="" id="roleName" name="title">
+				<input type="text" data-required='true' class="input-text" value="{$rulelist.title}" placeholder="" id="roleName" name="title">
+				<input type="hidden" name="id" value="{$rulelist.id}">
 			</div>
 		</div>
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>权限字段：</label>
 			<div class="formControls col-xs-5 col-sm-6">
-				<input type="text" class="input-text" value="" placeholder="如：admin/index" id="role" name="name">
+				<input type="text" class="input-text" value="{$rulelist.name}" placeholder="如：admin/index" id="role" name="name">
+			</div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>权限字段：</label>
+			<div class="formControls col-xs-5 col-sm-6">
+				<input type="text" class="input-text" value="{$rulelist.iconfont}" placeholder=" 如：admin/index" id="role" name="iconfont">
 			</div>
 		</div>
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-3">父权节点：</label>
 			<div class="formControls col-xs-5 col-sm-6"> <span class="select-box">
-				<select name="pid" class="select">
+				<select name="pid" class="select" pid="{$rulelist.pid}">
 					<option value="0">———请选择———</option>
-					<?php if(is_array($cateList)): foreach($cateList as $key=>$val): ?><option value="<?php echo ($val["id"]); ?>"><?php echo ($val["catename"]); ?></option><?php endforeach; endif; ?>
+					<foreach name="rlist" item="val">
+						<option value="{$val.id}">{$val.title}</option>
+					</foreach>
 				</select>
 				</span>
 			</div>
@@ -55,7 +64,7 @@
 		<div class="row cl">
 			<label class="form-label col-xs-4 col-sm-3">备注：</label>
 			<div class="formControls col-xs-5 col-sm-6">
-				<input type="text" class="input-text" value="" placeholder="" id="" name="des">
+				<input type="text" class="input-text" value="{$rulelist.des}" placeholder="" id="" name="des">
 			</div>
 		</div>
 		<div class="row cl">
@@ -67,11 +76,11 @@
 </article>
 
 <!--_footer 作为公共模版分离出去-->
-<script type="text/javascript" src="/mtadmin/Public/lib/jquery/1.9.1/jquery.min.js"></script>
-<script type="text/javascript" src="/mtadmin/Public/lib/layer/2.1/layer.js"></script>
-<script type="text/javascript" src="/mtadmin/Public/js/H-ui.js"></script> 
-<script type="text/javascript" src="/mtadmin/Public/js/checkform.js"></script> 
-<script type="text/javascript" src="/mtadmin/Public/js/H-ui.admin.js"></script> <!--/_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="__PUBLIC__/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/lib/layer/2.1/layer.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/H-ui.js"></script> 
+<script type="text/javascript" src="__PUBLIC__/js/checkform.js"></script> 
+<script type="text/javascript" src="__PUBLIC__/js/H-ui.admin.js"></script> <!--/_footer 作为公共模版分离出去-->
 
 <!--请在下方写此页面业务相关的脚本-->
 <script type="text/javascript">
@@ -92,7 +101,7 @@ $('#admin-role-save').click(function(){
 	}
 	$.ajax({
 		type:'post',
-		url:"<?php echo U('Role/addrule');?>",
+		url:"{:U('Role/editrule')}",
 		data:$('#form-admin-role-add').serialize(),
 		success:function(data){
 			if(data.flag == true)
@@ -116,6 +125,14 @@ $('#admin-role-save').click(function(){
 		}
 	})
 
+});
+$(function(){
+	$('option').each(function(){
+		if($(this).val() == $("select[name='pid']").attr('pid'))
+		{
+			$(this).attr('selected',true);
+		}
+	});
 });
 </script>
 <!--/请在上方写此页面业务相关的脚本-->

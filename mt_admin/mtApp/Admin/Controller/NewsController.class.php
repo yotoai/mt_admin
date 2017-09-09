@@ -184,7 +184,7 @@ class NewsController extends BaseController
         $arr['Bin']   = $this->News->getBinCount();
         $this->ajaxReturn($arr);
     }
-
+    // 下架文章
     public function changeStatusOff()
     {
         $id = I('post.id','');
@@ -211,7 +211,7 @@ class NewsController extends BaseController
             $this->ajaxReturn($map);
         }
     }
-
+    // 发布文章
     public function changeStatusUp()
     {
         $id = I('post.id','');
@@ -225,7 +225,7 @@ class NewsController extends BaseController
         if($aff == "No")
         {
             $map['flag'] = false;
-            $map['msg']  = "没有需要下架的文章！";
+            $map['msg']  = "没有需要发布的文章！";
             $this->ajaxReturn($map);
         }
         if($aff && $aff != "No"){
@@ -239,6 +239,7 @@ class NewsController extends BaseController
         }
     }
 
+    // 回收站还原
     public function restoreNews()
     {
         $id = I('post.id','');

@@ -25,6 +25,11 @@ String.prototype.isPwdEasy = function(){
 String.prototype.isNum = function(){
 	return  /^(?:-?\d+|-?\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$/.test(this);
 }
+// 字符串是否包含中文
+String.prototype.isSetZh = function(){
+	return /.*[\u4e00-\u9fa5]+.*$/.test(this);
+}
+
 String.prototype.gblen = function(nim,max){ 
 	var len = 0;  
 	for(var i=0; i<this.length; i++){

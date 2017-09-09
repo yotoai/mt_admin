@@ -36,7 +36,7 @@
 				<th width="25"><input type="checkbox" name="" value=""></th>
 				<th width="40">ID</th>
 				<th width="150">用户名</th>
-				<th>角色</th>
+				<th width="100">角色</th>
 				<th width="120">手机</th>
 				<th>邮箱</th>
 				<th width="160">加入时间</th>
@@ -72,16 +72,78 @@
 <script type="text/javascript" src="__PUBLIC__/lib/laypage/1.2/laypage.js"></script>
 <script type="text/javascript" src="__PUBLIC__/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>  
 <script type="text/javascript" src="__PUBLIC__/js/H-ui.js"></script> 
-<script type="text/javascript" src="__PUBLIC__/js/H-ui.admin.js"></script> 
+<script type="text/javascript" src="__PUBLIC__/js/H-ui.admin.js"></script>
 <script type="text/javascript">
-$('.table-sort').dataTable({
-	"aaSorting": [[ 1, "desc" ]],//默认第几个排序
-	"bStateSave": true,//状态保存
-	"aoColumnDefs": [
-	  //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
-	  {"orderable":false,"aTargets":[0,8]}// 制定列不参与排序
-	]
-});
+var table = $('.table-sort').dataTable({
+        "aaSorting": [[ 1, "desc" ]],
+        "sDom": '<"top">t<"bottom"iflpr><"clear">',
+        bDeferRender:true,
+        processing: true,
+            serverSide: true,
+            ajax: {
+                "url":"{:U('Admin/index')}",
+                "data":function(d){    //额外传递的参数
+                    d.mintime = $('#logmin').val();
+                    d.maxtime = $('#logmax').val();
+                    d.conditions = $("#conditions").val();
+                }
+            },
+            bStateSave: true,//状态保存
+            aLengthMenu : [10, 20, 30, 50, 100, 150],
+            bProcessing : true,
+            bAutoWidth: false,
+            bFilter : false, //是否启动过滤、搜索功能
+            bInfo : true, //是否显示页脚信息，DataTables插件左下角显示记录数 
+            bStateSave: false, // 不保留搜索条件
+            createdRow: function ( row, data, index) {
+                $(row).addClass('text-c');
+            },
+            aoColumns: [
+                {
+                    "sClass": "text-center",
+                    "data": "id",
+                    "render": function (data, type, full, meta) {
+                        return '<input type="checkbox"  name="select"  value="' + data + '" />';
+                    },
+                    "bSortable": false
+                },
+                { "mData": "id" },
+                { "mData": "username" },
+                { "mData": "rolename" },
+                { "mData": "telephone" },
+                { "mData": "email" },
+                { "mData": "addtime" },
+                { 
+                	'sClass':'text-center',
+                	'data':'status',
+                	'render':function(data,type,full,meta){
+                		if(data == 1){
+                			return '<span class="label label-success radius">已启用</span>';
+                		}else{
+                			return '<span class="label label-default radius">已禁用</span>';
+                		}
+                	}
+                },
+                {
+                    "sClass": "text-center",
+                    "data": "status",
+                    "render": function (data, type, full, meta) {
+                        var html = "";
+                        if(data == 1){
+                        	html = '<a style="text-decoration:none" onClick="admin_stop(this)" href="javascript:;" title="禁用" class="btn"><i class="Hui-iconfont">&#xe631;</i>禁用</a>';
+                        }else{
+                        	html = '<a style="text-decoration:none" onClick="admin_start(this)" href="javascript:;" title="启用" class="btn"><i class="Hui-iconfont">&#xe615;</i>启用</a>';
+                        }
+
+                        html += '<a style="text-decoration:none" class="ml-5 btn" onClick="admin_edit(`用户编辑`,this)" href="javascript:;" title="编辑"><i class="Hui-iconfont">&#xe6df;</i>编辑</a> <a style="text-decoration:none" class="ml-5 btn" onClick="admin_del(this);" href="javascript:;" title="删除"><i class="Hui-iconfont">&#xe6e2;</i>删除</a>';
+                        return html;
+                    },
+                    "bSortable": false
+                }
+            ]
+    });
+</script>
+<script type="text/javascript">
 /*
 	参数解释：
 	title	标题
@@ -100,32 +162,35 @@ function admin_add(title,url){
 	layer.full(index);
 }
 /*管理员-删除*/
-function admin_del(obj,id){
+function admin_del(obj){
 	layer.confirm('确认要删除吗？',function(index){	
+		var id = $(obj).parents('tr').find("td input[name='select']").val();
 		$.ajax({
-				type:"post",
-				url:"{:U('Admin/delAdmin')}",
-				data:"id="+id,
-				success:function(data){
-					if(data.flag == true){ 
-						$(obj).parents("tr").remove();
-						layer.msg(data.msg,{icon:1,time:1000});
-						return false;
-					}else if(data.flag == false){ 
-						layer.msg(data.msg,{icon:5,time:1000});
-						return false;
-					}else{
-						layer.msg('未知错误！',{icon:5,time:1000});
-						return false;
-					}
-				},
-				dataType:"json"
-			});
+			type:"post",
+			url:"{:U('Admin/delAdmin')}",
+			data:"id="+id,
+			success:function(data){
+				if(data.flag == true){ 
+                	$('.table-sort').dataTable().fnClearTable();
+					layer.msg(data.msg,{icon:1,time:1500});
+					return false;
+				}else if(data.flag == false){ 
+					layer.msg(data.msg,{icon:5,time:1500});
+					return false;
+				}else{
+					layer.msg('未知错误！',{icon:0,time:1500});
+					return false;
+				}
+			},
+			dataType:"json"
+		});
 	});
 }
 /*管理员-编辑*/
-function admin_edit(title,url,id){
+function admin_edit(title,obj){
+	var id = $(obj).parents('tr').find("td input[name='select']").val();
 	if(id != ''){
+		var url = "{:U('Admin/editAdmin')}?id="+id;
 		var index = layer.open({
 			type: 2,
 			title: title,
@@ -143,15 +208,14 @@ function admin_stop(obj,id){
 
 	layer.confirm('确认要停用吗？',function(index){
 		//此处请求后台程序，下方是成功后的前台处理……
-		$.ajax({ 
+		var id = $(obj).parents('tr').find("td input[name='select']").val();
+		$.ajax({
 			type:"post",
 			url:"{:U('Admin/upStatus')}",
 			data:"id="+id,
 			success:function(data){
 				if(data.flag == true){			
-					$(obj).parents("tr").find(".td-manage").prepend('<a onClick="admin_start(this,'+id+')" href="javascript:;" title="启用" style="text-decoration:none" class="btn"><i class="Hui-iconfont">&#xe615;</i>启用</a>');
-					$(obj).parents("tr").find(".td-status").html('<span class="label label-default radius">已停用</span>');
-					$(obj).remove();
+                	$('.table-sort').dataTable().fnClearTable();
 					layer.msg(data.msg,{icon: 1,time:1000});
 					return false;
 				}else if(data.flag == false){ 
@@ -169,18 +233,17 @@ function admin_stop(obj,id){
 }
 
 /*管理员-启用*/
-function admin_start(obj,id){
+function admin_start(obj){
 	layer.confirm('确认要启用吗？',function(index){
 		//此处请求后台程序，下方是成功后的前台处理……
+		var id = $(obj).parents('tr').find("td input[name='select']").val();
 		$.ajax({ 
 			type:"post",
 			url:"{:U('Admin/upStatus')}",
 			data:"id="+id,
 			success:function(data){
 				if(data.flag == true){
-					$(obj).parents("tr").find(".td-manage").prepend('<a onClick="admin_stop(this,'+id+')" href="javascript:;" title="停用" style="text-decoration:none" class="btn"><i class="Hui-iconfont">&#xe631;</i>停用</a>');
-					$(obj).parents("tr").find(".td-status").html('<span class="label label-success radius">已启用</span>');
-					$(obj).remove();
+                	$('.table-sort').dataTable().fnClearTable();
 					layer.msg(data.msg, {icon: 6,time:1000});
 					return false;
 				}else if(data.flag == false){ 
@@ -192,24 +255,6 @@ function admin_start(obj,id){
 			},
 			dataType:"json"
 		});
-	});
-}
-function admin_rule(obj,id)
-{
-	$.ajax({
-		type:'post',
-		url:"{:U('Admin/checkRule')}",
-		data:"id="+id,
-		success:function(data){
-			if(data==1){
-				$(obj).removeAttr('onclick');
-				layer.msg('编辑需谨慎！再次点击编辑...', {icon: 0,time:3000});
-				$(obj).attr('href',"{:U('Admin/editAdmin')}?id="+sid);
-				$(obj).click();
-			}else{
-				layer.msg(' 您没有权限编辑！', {icon: 5,time:1000});
-			}
-		}
 	});
 }
 /*admin-list 批量删除方法*/

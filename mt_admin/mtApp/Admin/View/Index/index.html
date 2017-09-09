@@ -6,8 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <meta http-equiv="Cache-Control" content="no-siteapp" />
-<LINK rel="Bookmark" href="/favicon.ico" >
-<LINK rel="Shortcut Icon" href="/favicon.ico" />
+<LINK rel="Bookmark" href="__PUBLIC__/img/favicon.ico" >
+<LINK rel="Shortcut Icon" href="__PUBLIC__/img/favicon.ico" />
 <!--[if lt IE 9]>
 <script type="text/javascript" src="lib/html5.js"></script>
 <script type="text/javascript" src="lib/respond.min.js"></script>
@@ -55,7 +55,7 @@ history.pushState(null,null,document.URL);
 				<li><a href="{:U('Index/quit')}">退出</a></li>
 			</ul>
 		</li>
-		<li id="Hui-msg"> <a id="msg" _href="{:U('System/msg')}" data-title="客户消息" onClick="Hui_admin_tab(this)" href="javascript:;" title="消息"><span class="badge badge-danger">{$num}</span><i class="Hui-iconfont" style="font-size:18px">&#xe68a;</i></a> </li>
+		<li id="Hui-msg"><a id="person" onClick="openPerson('个人中心',`{:U('System/msg')}`,'',360)" href="javascript:;" title="个人中心"><i class="Hui-iconfont" style="font-size:17px">&#xe705;</i></a> <a id="msg" _href="{:U('System/msg')}" data-title="客户消息" onClick="Hui_admin_tab(this)" href="javascript:;" title="消息"><span class="badge badge-danger">{$num}</span><i class="Hui-iconfont" style="font-size:18px">&#xe68a;</i></a> </li>
 		<li id="Hui-skin" class="dropDown right dropDown_hover"><a href="javascript:;" title="换肤"><i class="Hui-iconfont" style="font-size:18px">&#xe62a;</i></a>
 			<ul class="dropDown-menu radius box-shadow">
 				<li><a href="javascript:;" data-val="default" title="默认（黑色）">默认（黑色）</a></li>
@@ -71,18 +71,19 @@ history.pushState(null,null,document.URL);
 <aside class="Hui-aside">
 	<input runat="server" id="divScrollValue" type="hidden" value="" />
 	<div class="menu_dropdown bk_2">
-		<dl id="menu-article">
+			{$menu}
+<!-- 		<dl id="menu-article">
 			<dt><i class="Hui-iconfont">&#xe616;</i> 资讯管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
 			<dd>
 				<ul>
-					<li><a _href="{:U('News/index')}" data-title="资讯管理" href="javascript:void(0)">资讯管理</a></li>
+					<li><a _href="{:U('News/index')}" data-title="资讯管理" href="javascript:void(0)"><i class="Hui-iconfont">&#xe616;</i> 资讯管理</a></li>
 					<li><a _href="{:U('News/cate')}" data-title="资讯分类" href="javascript:void(0)">分类目录</a></li>
 					<li><a _href="{:U('News/draftList')}" data-title="草稿箱" href="javascript:void(0)">草稿箱</a></li>
 					<li><a _href="{:U('News/recycleBin')}" data-title="回收站" href="javascript:void(0)">回收站</a></li>
 				</ul>
 			</dd>
 		</dl>
-	<dl id="menu-picture">
+		<dl id="menu-picture">
 			<dt><i class="Hui-iconfont">&#xe613;</i> 图片管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
 			<dd>
 				<ul>
@@ -104,8 +105,7 @@ history.pushState(null,null,document.URL);
 			<dd>
 				<ul>
 					<li><a _href="{:U('Orders/ordersList')}" data-title="订单管理" href="javascript:void(0)">订单管理</a></li>
-					<!-- <li><a _href="{:U('Goods/index')}" data-title="产品管理" href="javascript:void(0)">产品管理</a></li> -->
-				</ul>
+ 				</ul>
 			</dd>
 		</dl>
 		<dl id="menu-member">
@@ -159,7 +159,7 @@ history.pushState(null,null,document.URL);
                     <li><a _href="{:U('System/logList')}" data-title="登录日志" href="javascript:void(0)">登录日志</a></li>
 				</ul>
 			</dd>
-		</dl>
+		</dl> -->
 	</div>
 </aside>
 <div class="dislpayArrow"><a class="pngfix" href="javascript:void(0);" onClick="displaynavbar(this)"></a></div>
@@ -193,15 +193,10 @@ function article_add(title,url){
 	});
 	layer.full(index);
 }
-// function Hui_msg_tab(title,url)
-// {
-// 	var index = layer.open({
-// 		type: 2,
-// 		title: title,
-// 		content: url
-// 	});
-// 	layer.full(index);
-// }
+function openPerson(title,url,w,h)
+{
+	layer_show(title,url,w,h);
+}
 /*图片-添加*/
 function picture_add(title,url){
 	var index = layer.open({
@@ -239,14 +234,17 @@ $(function(){
 				}
 			}
 		});
-	},30000)
+	},30000);
+
+	// $.ajax({
+	// 	url:"{:U('Index/buildfMenu')}",
+	// 	success:function(data){
+	// 		//console.log(data);
+	// 		$('.bk_2').append(data);
+	// 	}
+	// });
 });
 $(function(){
-
-	// function aa()
-	// {
-	// 	return 'aaaaa';
-	// }
 
 	window.onbeforeunload = function(){
 		return '';

@@ -19,6 +19,7 @@ return array(
     'DB_PORT'               =>  '3306',        // 端口
     'DB_PREFIX'             =>  'mt_',    // 数据库表前缀
 
-    'URL_MODEL'=>2, //
-    'URL_ROUTER_ON'   => true, 
+    'URL_MODEL'             =>  2, //
+    'URL_ROUTER_ON'         =>  true,
+    'AUTH_USER'             =>  'user'
 );

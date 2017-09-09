@@ -37,6 +37,7 @@ class LoginController extends Controller
 	    	{
 	    		$map = "验证码不能为空！";
 	    		$this->assign("map",$map);
+	    		$this->assign("_token",session('_token'));
 	    		$this->display();
 	    		exit();
 	    	}
@@ -46,6 +47,7 @@ class LoginController extends Controller
 			{
 				$map = "验证码错误！";
 				$this->assign("map",$map);
+	    		$this->assign("_token",session('_token'));
 				$this->display();
 				exit();
 			}
@@ -57,6 +59,7 @@ class LoginController extends Controller
 	    	{
 	    		$map = '账号不能为空！';
 	    		$this->assign("map",$map);
+	    		$this->assign("_token",session('_token'));
 	    		$this->display();
 	    		exit();
 	    	}
@@ -65,6 +68,7 @@ class LoginController extends Controller
 	    	{
 	    		$map = '用户名不存在！';
 	    		$this->assign("map",$map);
+	    		$this->assign("_token",session('_token'));
 	    		$this->display();
 	    		exit();
 	    	}
@@ -76,18 +80,22 @@ class LoginController extends Controller
 			{
 				$map = "密码不能为空！";
 				$this->assign("map",$map);
+	    		$this->assign("_token",session('_token'));
 				$this->display();
 				exit();
 			}
 
 			// 判断密码是否正确
-			$bool = $this->User->isTruePassword($userName,$userPwd);
-    		if(!$bool)
+			$bools = $this->User->isTruePassword($userName,$userPwd);
+    		if(!$bools)
     		{
     			$map = "密码错误！";
     			$this->assign("map",$map);
+	    		$this->assign("_token",session('_token'));
     			$this->display();
     			exit();
+    		}else{
+    			$userid = $bools;
     		}
 
     		// 判断用户被允许登录
@@ -96,6 +104,7 @@ class LoginController extends Controller
     		{
     			$map = '该账号禁止登录！';
     			$this->assign("map",$map);
+	    		$this->assign("_token",session('_token'));
     			$this->display();
     			exit();
     		}
@@ -106,6 +115,7 @@ class LoginController extends Controller
 			{
 				$map = '修改登录次数失败！';
     			$this->assign("map",$map);
+	    		$this->assign("_token",session('_token'));
     			$this->display();
     			exit();
 			}
@@ -116,6 +126,7 @@ class LoginController extends Controller
 			{
 				$map = '修改登录时间失败！';
     			$this->assign("map",$map);
+	    		$this->assign("_token",session('_token'));
     			$this->display();
     			exit();
 			}
@@ -126,6 +137,7 @@ class LoginController extends Controller
 			{
 				$map = '修改登录ip失败！';
     			$this->assign("map",$map);
+	    		$this->assign("_token",session('_token'));
     			$this->display();
     			exit();
 			}
@@ -158,10 +170,13 @@ class LoginController extends Controller
     		{
  				$map = "日志添加失败！";
     			$this->assign("map",$map);
+	    		$this->assign("_token",session('_token'));
     			$this->display();
     			exit();   			
     		}
     		session("mt_username",$userName);
+    		session("mt_userid",$userid);
+    		session('_token',null);
     		$this->redirect("Index/index");
     	}
     	$this->assign('_token',$this->getToken());
@@ -186,6 +201,7 @@ class LoginController extends Controller
     // 表单令牌
     private function getToken()
     {
+    	session('_token',null);
     	$_token = md5(C('_TOKEN').mt_rand());
     	session('_token',$_token);
     	return $_token;

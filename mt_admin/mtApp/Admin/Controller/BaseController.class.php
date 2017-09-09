@@ -1,7 +1,6 @@
 <?php
 namespace Admin\Controller;
 use Think\Controller;
-use Think\Auth;
 class BaseController extends Controller
 {
 	protected $User;
@@ -12,14 +11,18 @@ class BaseController extends Controller
 	{
 		$this->User = D("user");
 		$this->username = session("mt_username");
+		$this->uid = session("mt_userid");
 		$this->isErrorLogin();
 	}
 	
-	protected function authCheck()
+	protected function authCheck($name)
 	{
-		$auth = new Auth();
+		$auth = new \Think\Auth();
+
 		//需要验证的规则列表,支持逗号分隔的权限规则或索引数组
-		$name = MODULE_NAME . '/' . ACTION_NAME;
+		$name = empty($name) ? MODULE_NAME . '/' . ACTION_NAME : $name;
+
+		//echo $this->uid;
 		//分类  1为实时认证；2为登录认证
 		$type = 1;
 		//执行check的模式
@@ -27,7 +30,7 @@ class BaseController extends Controller
 		//'or' 表示满足任一条规则即通过验证;
 		//'and'则表示需满足所有规则才能通过验证
 		$relation = 'and';
-		return $auth->check($name, $this->uid, $type, $mode, $relation);
+		return $auth->check($name,$this->uid, $type, $mode, $relation);
 	}
 
     // 错误登录方法
@@ -45,5 +48,19 @@ class BaseController extends Controller
 				exit();
 			}
 		}
+	}
+
+	protected function visitAuth()
+	{
+		if(!$this->authCheck())
+		{
+			$this->redirect("Index/index");
+			exit();
+		}
+	}
+
+	public function errorPage()
+	{
+		$this->display('404.html');
 	}
 }

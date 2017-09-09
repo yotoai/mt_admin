@@ -1,24 +1,23 @@
 <?php
 namespace Admin\Model;
 use Think\Model;
-class AuthRuleModel extends Model
+class AuthGroupModel extends Model
 {
 	// 验证数据
 	protected $_validate = array(
 		array('id','require','未知权限！',1,'',2),
 		array('id','integer','权限ID错误！',1,'',2),
-		array('title','require','请输入权限名称！',1,'',3),
-		array('name','require','权限字段不能为空！',1,'',3),
-		array('name','','权限字段已存在！',1,'unique',3)
+		array('title','require','角色名称不能为空！',1,'',array(1,2)),
+		array('title','','该角色已存在！',1,'unique',3),
+		array('rules','require','角色权限不能为空！',1,'',array(1,2))
 	);
 
 	// 自动完成
 	protected $_auto = array(
 		array('addtime','time',1,'function'),
 		array('des','setdes',1,'callback'),
-		array('iconfont','transString',1,'callback'),
-		array('iconfont','transString',2,'callback')
 	);
+
 	// 自动完成回调函数
 	public function setdes()
 	{
@@ -33,14 +32,8 @@ class AuthRuleModel extends Model
 		}
 	}
 
-	// 把图标编码转换成字符串
-	public function transString()
-	{
-		return preg_replace('/&amp;/', '&' ,I('post.iconfont'));
-	}
-
 	// 获取 datatables格式 权限数据
-	public function getRuleList($data)
+	public function getRoleList($data)
 	{
 		$draw = $data['draw'];
 
@@ -50,7 +43,7 @@ class AuthRuleModel extends Model
 		$search = trim($data['conditions']);
 		if(strlen($search) > 0)
 		{
-			$where['id|title|name|des|addtime'] = array('like','%'.$search.'%');
+			$where['id|title|des|addtime'] = array('like','%'.$search.'%');
 		}
 		$where['status'] = array('neq',-1);
 		$recordsTotal = $this->where('status != -1')->count();
@@ -58,9 +51,8 @@ class AuthRuleModel extends Model
 		$orderArr = [
 						1 => 'id',
 						2 => 'title',
-						3 => 'name',
-						4 => 'des',
-						5 => 'addtime'
+						3 => 'des',
+						4 => 'addtime'
 					];
 		$orderField = (empty($orderArr[$data['order']['0']['column']])) ? 'id' : $orderArr[$data['order']['0']['column']];
 		$order = $orderField.' '.$data['order']['0']['dir'];
@@ -68,7 +60,6 @@ class AuthRuleModel extends Model
 		$field = array(
 					'id',
 					'title',
-					'name',
 					'des',
 					'addtime'
 				);
@@ -116,45 +107,12 @@ class AuthRuleModel extends Model
         return $data;
     }
 
-    public function findRule($id)
+    // 查询一条数据
+    public function findRole($id)
     {
-    	$field = array('id','title','name','pid','des','iconfont');
-    	$res = $this->field($field)->where('id='.$id)->find();
-    	$res['iconfont'] = preg_replace('/&/', '&amp;' ,$res['iconfont']);
-    	return $res;
+    	$where['id'] = $id;
+    	$field = array('id','title','rules','des');
+    	$list = $this->field($field)->where($where)->find();
+    	return $list;
     }
-  	
-  	private static $arrs = array();
-	public static function getRules($pid=0,$count=1)
-	{
-		$where['pid'] = $pid;
-		$field = array(
-					'id',
-					'pid',
-					'title'
-				);	
-		
-		$list = M('auth_rule')->field($field)->where($where)->select();
-		foreach($list as $key => $val)
-		{
-			if($val['pid'] == $pid)
-			{
-				
-				$val['title'] = str_repeat('— ', $count-1).$val['title'];
-				self::$arrs[] = $val;
-				unset($list[$key]);
-				self::getRules($val['id'],$count+1);
-			}
-		}
-		return self::$arrs;
-	}
-
-	// 获取权限 根据pid
-	public function getRuleDataWithPid($pid=0)
-	{
-		$where['pid'] = $pid;
-		$field = array('id','title','name','iconfont');
-		$list = $this->field($field)->where($where)->select();
-		return $list;
-	}
 }

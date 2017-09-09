@@ -3,33 +3,154 @@ namespace Admin\Model;
 use Think\Model;
 class UserModel extends Model
 {
-	// 获取用户列表
-	public function getUserlist()
+	// 验证数据
+	protected $_validate = array(
+		array('id','require','未知用户！'),
+		array('username','require','用户名不能为空！'),
+		array('username','','用户已存在！',1,'unique',3),
+		array('username','3,16','用户名长度需在3-16位！',1,'length',1),
+		array('password','require','密码不能为空！'),
+		array('repassword','require','确认密码不能为空！'),
+		array('password','6,32','密码最短为6位！',0,'length'),
+		array('password','repassword','请输入相同密码！',1,'confirm',1),
+		array('telephone','11','手机位数错误！',0,'length'),
+		array('telephone','require','请输入手机！'),
+		array('telephone','/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/','手机格式错误！',0,'regex'),
+		array('email','require','请输入email！'),
+		array('email','email','请输入正确的email！',0),
+		array('role','require','用户角色不能为空！'),
+		array('role','verifyRole','用户角色不存在！',0,'function')
+	);
+
+	// 判断 角色id 是否存在
+	public function verifyRole()
 	{
-		$arr = array('id','username','telephone','email','grade','status','addtime');
-		$userList = $this->field($arr)->select();
-		return $userList;
+		$arr = array_values( M('auth_group')->field('id')->select() );
+		return in_array(I('post.role'),$arr) ? true : false;
 	}
 
-	// 单独获取一个用户的信息
-	public function getOneuserinfo($data)
+	// 自动完成
+	protected $_auto = array(
+		array('addtime','time',1,'function'),
+		array('password','encrypt',3,'callback'),
+		array('des','setDes',1,'callback'),
+		array('des','setDes',2,'callback'),
+		array('rolename','setRoleName',1,'callback'),
+		array('rolename','setRoleName',2,'callback')
+	);
+
+	/* 给密码加密 */
+	public function encrypt()
 	{
-		$arr = array('id','username','password','telephone','email','grade','des');
+		if(empty(I('post.password'))) return false;
+		return md5(crypt(I('post.password/s'), C('SALT')));
+	}
+
+	// 设置备注
+	public function setDes()
+	{
+		return empty(trim(I('post.des/s'))) ? '无' : I('post.des/s');
+	}
+
+	// 设置 角色名称 
+	public function setRoleName()
+	{
+		return array_values(M('auth_group')->field('title')->where('id='.I('post.role'))->find())[0];
+	}
+
+	// 获取用户列表
+	public function getUserlist($data)
+	{
+		//获取Datatables发送的参数 必要
+        $draw = $data['draw'];    //这个值直接返回给前台
+        //获取时间区间
+        $timeArr['mintime'] = $data['mintime'];
+        $timeArr['maxtime'] = $data['maxtime'];
+        $where = $this->dealTime($timeArr);
+        //搜索框
+        $search = trim($data['conditions']);    //获取前台传过来的过滤条件 
+        if(strlen($search) > 0) {
+            $where['id|username|telephone|email|rolename|status|addtime'] = array('like','%'.$search.'%');
+        }
+		//定义查询数据总记录数sql
+    	$recordsTotal    = $this->count();
+
+		//定义过滤条件查询过滤后的记录数sql
+        $recordsFiltered =  $this->where($where)->count();
+        //排序条件
+        $orderArr = [
+        				1=>'id', 
+        				2=>'username', 
+        				3=>'telephone', 
+        				4=>'email', 
+        				5=>'rolename',
+        				6=>"status",
+        				7=>"addtime"
+        			];
+        			        //获取要排序的字段
+        $orderField = (empty($orderArr[$data['order']['0']['column']])) ? 'id' : $orderArr[$data['order']['0']['column']];
+        //需要空格,防止字符串连接在一块
+        $order = $orderField.' '.$data['order']['0']['dir'];
+        //按条件过滤找出记录
+        $result = [];
+		$field = array(
+					'id',
+					'username',
+					'telephone',
+					'email',
+					'rolename',
+					'status',
+					'addtime'
+				);
+		$result = $this
+					->field($field)
+					->where($where)
+					->order('id desc')
+					->limit(intval($data['start']).','.intval($data['length']))
+					->select();
+					//echo $this->getLastSql();
+		foreach($result as $key=>$val)
+        {
+			$result[$key]['addtime'] = date("Y-m-d H:i:s",$val['addtime']);
+        }
+        //拼接要返回的数据
+        $list = array(
+            "draw"            => intval($draw),
+            "recordsTotal"    => intval($recordsTotal),
+            "recordsFiltered" => intval($recordsFiltered),
+            "data"            => $result
+        );
+		return $list;
+	}
+
+	//其中,dealTime方法主要用于处理时间段
+    public function dealTime($data)
+    {
+        //处理最小时间
+        if($data['mintime'] == '') $data['mintime'] = 0; else $data['mintime'] = strtotime($data['mintime']);
+        //处理最大时间(当前时间)
+        if ($data['maxtime'] == '') $data['maxtime'] = time(); else $data['maxtime'] = strtotime($data['maxtime'])+3600*24;
+        $data['addtime'] = array('between', array($data['mintime'], $data['maxtime']));
+        //清除没用的东西(防止条件报错)
+        unset($data['mintime']);
+        unset($data['maxtime']);
+        return $data;
+    }
+
+	// 单独获取一个用户的信息
+	public function findUserInfo($data)
+	{
+		$arr = array('id','username','telephone','email','role','des');
 		$adminList = $this->field($arr)->where($data)->find();
 		$adminList['password'] = substr($adminList['password'],0,8);
 		return $adminList;
 	}
 
+	// 检查当前登录用户id
 	public function CheckCurrentLoginID($username)
 	{
 		$res = $this->field("id")->where("username='".$username."'")->find();
 		return $res;
-	}
-
-	// 添加用户
-	public function addUser($data)
-	{
-		return $this->add($data) ? true : false;
 	}
 
 	// 删除用户
@@ -39,22 +160,12 @@ class UserModel extends Model
 		return $aff;
 	}
 
-	// 修改用户
-	public function saveUser($id,$data)
-	{
-		$aff = $this->where('id='.$id)->save($data);
-		return $aff;
-	}
-
 	// 修改用户状态
 	public function upStatus($id)
 	{
-		$res = $this->field('status')->where('id='.$id)->find();
-		if($res['status'] == 1){
-			$data['status'] = -99;
-		}else{
-			$data['status'] = 1;
-		}
+		$where['id'] = $id;
+		$res = $this->field('status')->where($where)->find();
+		$data['status'] = $res['status'] == 1 ? -99 : 1;
 		$aff = $this->where('id='.$id)->save($data);
 		return $aff;
 	}
@@ -79,11 +190,11 @@ class UserModel extends Model
 	{
 		$data['username'] = $username;
 		$password = $this->field("password")->where($data)->find();
-		$data['password'] = md5($userpassword);
-		$count = $this->where($data)->count("id");
-		if($data['password'] == $password['password'] && $count ==1)
+		$data['password'] = md5(crypt($userpassword, C('SALT')));
+		$userid = $this->where($data)->getField("id");
+		if($data['password'] == $password['password'] && $userid)
 		{
-			return true;
+			return $userid;
 		}else{
 			return false;
 		}
@@ -93,7 +204,7 @@ class UserModel extends Model
 	public function userStatus($username,$userpassword)
 	{
 		$data['username'] = $username;
-		$data['password'] = md5($userpassword);
+		$data['password'] = md5(crypt($userpassword, C('SALT')));
 		$status = $this->field("status")->where($data)->find();
 		return $status['status'] == 1 ? true : false;
 	}
@@ -112,13 +223,13 @@ class UserModel extends Model
 		}
 	}
 
-	// 获取用户基本信息
+	// 获取用户角色
 	public function getUserbaseinfo($username,$userpassword)
 	{
 		$data['username'] = $username;
 		$data['password'] = md5($userpassword);
-		$userinfo = $this->field("grade")->where($data)->find();
-		return $userinfo;
+		$grade = $this->field("grade")->where($data)->find();
+		return $grade;
 	}
 
 	// 改变用户在线状态
@@ -172,7 +283,6 @@ class UserModel extends Model
 	{
 		$where['username'] = $username;
 		$time = $this->field('recentlylogintime,lastlogintime')->where($where)->find();
-		//var_dump(boolval( $time ));
 		if($time && $ac == 'up')
 		{
 			$data['lastlogintime']     = $time['recentlylogintime'];

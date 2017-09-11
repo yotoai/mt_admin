@@ -7,12 +7,12 @@ class AdminController extends BaseController
 	public function _initialize()
 	{
 		parent::_initialize();
-		$this->visitAuth();
 		$this->Grade = D("grade");
 	}
 
 	public function index()
 	{
+		$this->visitAuth();
 		if(IS_AJAX){
 			$userList = $this->User->getUserlist(I('get.'));
 			$this->ajaxReturn($userList);
@@ -21,10 +21,13 @@ class AdminController extends BaseController
 	}
 
 	public function addAdmin()
-	{	
-		if(IS_POST)
+	{
+		if(IS_AJAX && !IS_POST){
+			$this->isHaveAuth();
+		}
+		if(IS_POST && IS_AJAX)
 		{
-			if($this->User->create())
+			if($this->User->validate($this->User->insertUserRules())->auto($this->User->insertUserAuto())->create())
 			{
 				$this->User->startTrans();
 				$aff = $this->User->add();
@@ -70,12 +73,12 @@ class AdminController extends BaseController
 
 	public function delAdmin()
 	{
+		$this->isHavedAuth();
 		$id = I('post.id','');
 		if(empty($id)){
 			$map['flag'] = false;
 			$map['msg'] = '找不到要删除的！';
 			$this->ajaxReturn($map);
-			exit();
 		}
 		$data['id'] = $id;
 		$aff = $this->User->deleteUser($data);
@@ -83,21 +86,22 @@ class AdminController extends BaseController
 			$map['flag'] = true;
 			$map['msg'] = '删除成功！';
 			$this->ajaxReturn($map);
-			exit();
 		}else{
 			$map['flag'] = false;
 			$map['msg'] = '删除失败！';
 			$this->ajaxReturn($map);
-			exit();
 		}
 	}
 
 	// 编辑用户基本信息
 	public function editAdmin()
 	{
-		if(IS_POST)
+		if(IS_AJAX && !IS_POST){
+			$this->isHaveAuth();
+		}
+		if(IS_POST && IS_AJAX)
 		{
-			if(!$this->User->create())
+			if(!$this->User->validate($this->User->updateUserRules())->auto($this->User->updateUserAuto())->create())
 			{
 				$map['flag'] = false;
 				$map['msg']  = $this->User->getError();
@@ -146,7 +150,7 @@ class AdminController extends BaseController
 	// 重置密码
 	public function resetPassWord()
 	{
-		if(!$this->User->create())
+		if(!$this->User->validate($this->User->resetPwdRules())->create())
 		{
 			$map['flag'] = false;
 			$map['msg']  = $this->User->getError();
@@ -155,7 +159,8 @@ class AdminController extends BaseController
 		else
 		{
 			$where['id'] = I('post.id/d');
-			if($this->User->where($where)->save() !== false)
+			$data['password'] = $this->User->encrypt();
+			if($this->User->where($where)->save($data) !== false)
 			{
 				$map['flag'] = true;
 				$map['msg'] = '编辑成功';
@@ -168,6 +173,7 @@ class AdminController extends BaseController
 		}
 	}
 
+	// 生成随机密码
 	public function randPassWord( $length = 8 )
 	{
 		// 密码字符集，可任意添加你需要的字符
@@ -182,6 +188,7 @@ class AdminController extends BaseController
 
 	public function upStatus()
 	{
+		$this->isHavedAuth();
 		$id = I('post.id','');
 		if(empty($id)){
 			$map['flag'] = false;
@@ -189,6 +196,7 @@ class AdminController extends BaseController
 			$this->ajaxReturn($map);
 		}
 		$aff = $this->User->upStatus($id);
+		//dump($aff);
 		if($aff){
 			$map['flag'] = true;
 			$map['msg'] = '操作成功！';

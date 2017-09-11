@@ -54,6 +54,7 @@
 <script type="text/javascript" src="__PUBLIC__/lib/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript" src="__PUBLIC__/lib/layer/2.1/layer.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/H-ui.js"></script> 
+<script type="text/javascript" src="__PUBLIC__/js/commonfunctions.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/H-ui.admin.js"></script> <!--/_footer 作为公共模版分离出去-->
 
 <!--请在下方写此页面业务相关的脚本-->
@@ -113,12 +114,17 @@ var table = $('.table-sort').dataTable({
 <script type="text/javascript">
 /*管理员-角色-添加*/
 function admin_role_add(title,url,w,h){
-	layer_show(title,url,w,h);
+    if(isHaveAuth(url)){
+	   layer_show(title,url,w,h);
+    }
 }
 /*管理员-角色-编辑*/
 function admin_role_edit(title,id,w,h){
-    var url = "{:U('Role/editrole')}?id="+id;
-	layer_show(title,url,w,h);
+    var url = "{:U('Role/editrole')}";
+    if(isHaveAuth(url)){
+        url = url +"?id="+id;
+    	layer_show(title,url,w,h);
+    }
 }
 /*管理员-角色-删除*/
 function admin_role_del(obj,id){

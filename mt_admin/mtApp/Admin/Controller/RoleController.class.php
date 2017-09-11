@@ -15,6 +15,7 @@ class RoleController extends BaseController
 	// 角色管理
 	public function rolelist()
 	{
+		$this->visitAuth();
 		if(IS_AJAX)
 		{
 			$rlist = $this->role->getRoleList(I('get.'));
@@ -26,7 +27,10 @@ class RoleController extends BaseController
 	// 添加角色
 	public function addrole()
 	{
-		if(IS_POST)
+		if(IS_AJAX && !IS_POST){
+			$this->isHaveAuth();
+		}
+		if(IS_POST && IS_AJAX)
 		{
 			if($this->role->create())
 			{
@@ -96,7 +100,10 @@ class RoleController extends BaseController
 	// 编辑角色
 	public function editrole()
 	{
-		if(IS_POST)
+		if(IS_AJAX && !IS_POST){
+			$this->isHaveAuth();
+		}
+		if(IS_POST && IS_AJAX)
 		{
 			if(!$this->role->create())
 			{
@@ -132,8 +139,7 @@ class RoleController extends BaseController
 	// 删除角色
 	public function delrole()
 	{
-		// dump(I('post.'));
-		// return;
+		$this->isHavedAuth();
 		if(!$this->role->create())
 		{
 			$map['flag'] = false;
@@ -161,6 +167,7 @@ class RoleController extends BaseController
 	// 权限管理
 	public function rulelist()
 	{
+		$this->visitAuth();
 		if(IS_AJAX)
 		{
 			$ruleList = $this->rule->getRuleList(I('get.'));
@@ -172,7 +179,12 @@ class RoleController extends BaseController
 	// 添加权限
 	public function addrule()
 	{
-		if(IS_POST)
+		if(IS_AJAX && !IS_POST){
+			$this->isHaveAuth();
+		}
+		dump($this->authCheck());
+			exit;
+		if(IS_POST && IS_AJAX)
 		{
 			$map = array();
 			if(!$this->rule->create())
@@ -214,7 +226,10 @@ class RoleController extends BaseController
 	// 编辑权限
 	public function editrule()
 	{
-		if(IS_POST)
+		if(IS_AJAX && !IS_POST){
+			$this->isHaveAuth();
+		}
+		if(IS_POST && IS_AJAX)
 		{
 			$map = array();
 			if(!$this->rule->create())
@@ -250,6 +265,7 @@ class RoleController extends BaseController
 
 	public function delrule()
 	{
+		$this->isHavedAuth();
 		$id = trim(I('post.id/d',''));
 		if(empty($id))
 		{

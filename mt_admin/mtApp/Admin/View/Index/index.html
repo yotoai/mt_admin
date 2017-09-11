@@ -55,7 +55,10 @@ history.pushState(null,null,document.URL);
 				<li><a href="{:U('Index/quit')}">退出</a></li>
 			</ul>
 		</li>
-		<li id="Hui-msg"><a id="person" onClick="openPerson('个人中心',`{:U('System/msg')}`,'',360)" href="javascript:;" title="个人中心"><i class="Hui-iconfont" style="font-size:17px">&#xe705;</i></a> <a id="msg" _href="{:U('System/msg')}" data-title="客户消息" onClick="Hui_admin_tab(this)" href="javascript:;" title="消息"><span class="badge badge-danger">{$num}</span><i class="Hui-iconfont" style="font-size:18px">&#xe68a;</i></a> </li>
+		<li id="Hui-msg">
+			<a id="person" onClick="openPerson('个人中心',`{:U('Person/person')}`,'',450)" href="javascript:;" title="个人中心"><i class="Hui-iconfont" style="font-size:17px">&#xe705;</i></a>
+			<a id="msg" _href="{:U('System/msg')}" data-title="客户消息" onClick="Hui_admin_tab(this)" href="javascript:;" title="消息"><span class="badge badge-danger">{$num}</span><i class="Hui-iconfont" style="font-size:18px">&#xe68a;</i></a>
+			</li>
 		<li id="Hui-skin" class="dropDown right dropDown_hover"><a href="javascript:;" title="换肤"><i class="Hui-iconfont" style="font-size:18px">&#xe62a;</i></a>
 			<ul class="dropDown-menu radius box-shadow">
 				<li><a href="javascript:;" data-val="default" title="默认（黑色）">默认（黑色）</a></li>

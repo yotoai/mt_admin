@@ -20,9 +20,7 @@ class BaseController extends Controller
 		$auth = new \Think\Auth();
 
 		//需要验证的规则列表,支持逗号分隔的权限规则或索引数组
-		$name = empty($name) ? MODULE_NAME . '/' . ACTION_NAME : $name;
-
-		//echo $this->uid;
+		$name = empty($name) ? CONTROLLER_NAME . '/' . ACTION_NAME : $name;
 		//分类  1为实时认证；2为登录认证
 		$type = 1;
 		//执行check的模式
@@ -59,8 +57,28 @@ class BaseController extends Controller
 		}
 	}
 
-	public function errorPage()
+	// 判断是否有权限并返回
+	public function isHaveAuth()
 	{
-		$this->display('404.html');
+		if(!$this->authCheck())
+		{
+			$map['flag'] = false;
+			$map['msg'] = '您没有权限！';
+			$this->ajaxReturn($map);
+		}else{
+			$map['flag'] = true;
+			$this->ajaxReturn($map);
+		}
+	}
+
+	// 判断是否有权限并返回
+	public function isHavedAuth()
+	{
+		if(!$this->authCheck())
+		{
+			$map['flag'] = false;
+			$map['msg'] = '您没有权限！';
+			$this->ajaxReturn($map);
+		}
 	}
 }

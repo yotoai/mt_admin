@@ -10,7 +10,6 @@ class SystemController extends BaseController
 	{
         parent::_initialize();
 		$this->Log = D('log');
-		$this->User = D('user');
         $this->Msg = D('msg');
 	}
 
@@ -169,37 +168,6 @@ class SystemController extends BaseController
             $this->display();
         }
     }
-
-    public function changepwd()
-    {
-        if(IS_POST){
-            $pwd = trim(I("post.pwd",''));
-            $newpwd = trim(I("post.newpwd",''));
-            $user = session("mt_username");
-            if(empty($pwd)){
-                $this->ajaxReturn(array("flag"=>false,"msg"=>"密码不能为空！"));
-            }elseif(empty($newpwd)){
-                $this->ajaxReturn(array("flag"=>false,"msg"=>"新密码不能为空！"));
-            }else{
-                $res = M("admin")->field("password")->where("username='".$user."'" )->find();
-                if($res['password'] != md5($pwd)){
-                    $this->ajaxReturn(array("flag"=>false,"msg"=>"原密码错误！"));
-                }else{
-                    $data["password"] = md5($newpwd);
-                    $aff = M("admin")->where("username='".$user."'")->save($data);
-                    if($aff){
-                        $this->ajaxReturn(array("flag"=>true,"msg"=>"修改成功！"));
-                    }else{
-                        $this->ajaxReturn(array("flag"=>false,"msg"=>"修改失败！"));
-                    }
-                }
-            }
-        }else{
-            $username = session("mt_username"); 
-            $this->assign('username',$username);
-            $this->display();
-        }
-    }
     
     /* 联系QQ管理*/
     public function setqq()
@@ -215,12 +183,10 @@ class SystemController extends BaseController
                     $msg['flag'] = true;
                     $msg['msg'] = "保存成功！";
                     $this->ajaxReturn($msg);
-                    exit;
                 }else{
                     $msg['flag'] = false;
                     $msg['msg'] = "保存失败！";
                     $this->ajaxReturn($msg);
-                    exit;
                 }
             }else{
                 $list = $qqcontact->field("qqnum,qqtitle")->where("id=".$id)->find();
@@ -228,19 +194,16 @@ class SystemController extends BaseController
                     $msg['flag'] = false;
                     $msg['msg'] = "您没有做出任何修改！";
                     $this->ajaxReturn($msg);
-                    exit;
                 }
                 $aff = $qqcontact->where("id=".$id)->save($data);
                 if($aff){
                     $msg['flag'] = true;
                     $msg['msg'] = "保存成功！";
                     $this->ajaxReturn($msg);
-                    exit;
                 }else{
                     $msg['flag'] = false;
                     $msg['msg'] = "修改失败！";
                     $this->ajaxReturn($msg);
-                    exit;
                 }
             }
         }else{
@@ -266,12 +229,10 @@ class SystemController extends BaseController
             $map['flag'] = true;
             $map['msg'] = "已启用！";
             $this->ajaxReturn($map);
-            exit;
         }else{
             $map['flag'] = false;
             $map['msg'] = "启用失败！";
             $this->ajaxReturn($map);
-            exit;
         }
     }
 
@@ -283,7 +244,6 @@ class SystemController extends BaseController
             $map['flag'] = false;
             $map['msg'] = "删除失败，没有找到要删除的！";
             $this->ajaxReturn($map);
-            exit;
         }else{
             $aff = $qq->where("id=".$id)->delete();
             if($aff){
@@ -295,7 +255,6 @@ class SystemController extends BaseController
                 $map['flag'] = false;
                 $map['msg'] = "删除失败！";
                 $this->ajaxReturn($map);
-                exit;
             }
         }
     }

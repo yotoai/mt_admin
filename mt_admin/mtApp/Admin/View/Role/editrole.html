@@ -49,7 +49,7 @@
 					{$rulestr}
 			</div>
 		</div>
-		<div class="row cl">
+		<div class="row cl" style="margin-bottom: 10px;">
 			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
 				<button type="button" class="btn btn-success radius" id="admin-role-save" name="admin-role-save"><i class="icon-ok"></i> 确定</button>
 			</div>
@@ -86,12 +86,12 @@ $(function(){
 			$(this).parents(".permission-list").find("dt").first().find("input:checkbox").prop("checked",true);
 		}
 		else{
-			if(l==0){
-				$(this).closest("dl").find("dt input:checkbox").prop("checked",false);
-			}
-			if(l2==0){
-				$(this).parents(".permission-list").find("dt").first().find("input:checkbox").prop("checked",false);
-			}
+			// if(l==0){
+			// 	$(this).closest("dl").find("dt input:checkbox").prop("checked",false);
+			// }
+			// if(l2==0){
+			// 	$(this).parents(".permission-list").find("dt").first().find("input:checkbox").prop("checked",false);
+			// }
 		}
 	});
 

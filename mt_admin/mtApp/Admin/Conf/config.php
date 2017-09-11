@@ -12,7 +12,7 @@ return array(
 
     // 'TMPL_ACTION_ERROR'     => '/Public/404.html',
 
-    'TMPL_EXCEPTION_FILE'   =>  '404.html' // 异常页面的模板文件
+    //'TMPL_EXCEPTION_FILE'   =>  '404.html' // 异常页面的模板文件
 
   	// 'SHOW_PAGE_TRACE' =>true
 );

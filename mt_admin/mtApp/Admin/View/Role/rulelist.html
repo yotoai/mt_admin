@@ -52,15 +52,6 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr class="text-c">
-				<td><input type="checkbox" value="1" name=""></td>
-				<td>1</td>
-				<td>栏目添加</td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td><a title="编辑" href="javascript:;" onclick="admin_permission_edit('角色编辑','admin-permission-add.html','1','','310')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6df;</i></a> <a title="删除" href="javascript:;" onclick="admin_permission_del(this,'1')" class="ml-5" style="text-decoration:none"><i class="Hui-iconfont">&#xe6e2;</i></a></td>
-			</tr>
 		</tbody>
 	</table>
 </div>
@@ -68,7 +59,8 @@
 <!--_footer 作为公共模版分离出去-->
 <script type="text/javascript" src="__PUBLIC__/lib/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript" src="__PUBLIC__/lib/layer/2.1/layer.js"></script>
-<script type="text/javascript" src="__PUBLIC__/js/H-ui.js"></script> 
+<script type="text/javascript" src="__PUBLIC__/js/H-ui.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/commonfunctions.js"></script>
 <script type="text/javascript" src="__PUBLIC__/js/H-ui.admin.js"></script> <!--/_footer 作为公共模版分离出去-->
 
 <!--请在下方写此页面业务相关的脚本-->
@@ -192,12 +184,17 @@ function CreateTree()
 */
 /*管理员-权限-添加*/
 function admin_permission_add(title,url,w,h){
-	layer_show(title,url,w,h);
+	if(isHaveAuth(url)){
+		layer_show(title,url,w,h);
+	}
 }
 /*管理员-权限-编辑*/
 function admin_permission_edit(title,id,w,h){
-	var url = "{:U('Role/editrule')}?id="+id;
-	layer_show(title,url,w,h);
+	var url = "{:U('Role/editrule')}";
+	if(isHaveAuth(url)){
+		url = url +"?id="+id;
+		layer_show(title,url,w,h);
+	}
 }
 
 /*管理员-权限-删除*/

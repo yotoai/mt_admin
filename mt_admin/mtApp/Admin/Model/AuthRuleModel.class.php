@@ -23,14 +23,7 @@ class AuthRuleModel extends Model
 	public function setdes()
 	{
 		$des = trim(I('post.des'));
-		if(empty($des))
-		{
-			return '无';
-		}
-		else
-		{
-			return $des;
-		}
+		return empty($des) ? '无' : $des;
 	}
 
 	// 把图标编码转换成字符串

@@ -125,7 +125,7 @@ $(function(){
 			$(this).attr("selected",true);
 		}
 	});
-
+	// ajax 生成随机密码
 	// $("#randpwd").click(function(){
 	// 	$.ajax({
 	// 		url:"{:U('Admin/randPassWord')}",
@@ -206,7 +206,7 @@ function subform()
 		layer.msg("手机号码不能为空！",{icon:0,time:2000});
 		$("input[name='telephone']").focus();
 		return false;
-	}else if(!telephone.isTel()){
+	}else if(!telephone.isMobile()){
 		layer.msg("请输入正确的手机号码！",{icon:0,time:2000});
 		$("input[name='telephone']").focus();
 		return false;

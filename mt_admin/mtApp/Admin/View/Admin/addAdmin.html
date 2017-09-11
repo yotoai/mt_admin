@@ -144,6 +144,10 @@ function subform()
 		layer.msg("用户名不能为空！",{icon:0,time:2000});
 		$("input[name='username']").focus();
 		return false;
+	}else if(/.*[\u4e00-\u9fa5]+.*$/.test(username)){
+		layer.msg('用户名不能有中文！',{icon:0,time:2000});
+		$("input[name='username']").focus();
+		return false;
 	}else if(!username.isUserEasy()){
 		layer.msg('用户名过于简单！',{icon:0,time:2000});
 		$("input[name='username']").focus();
@@ -154,7 +158,12 @@ function subform()
 		layer.msg("密码不能为空！",{icon:0,time:2000});
 		$("input[name='password']").focus();
 		return false;
-	}else if(!pass.isPwdEasy()){
+	}else if(/.*[\u4e00-\u9fa5]+.*$/.test(pass)){
+		layer.msg('密码不能有中文！',{icon:0,time:2000});
+		$("input[name='password']").focus();
+		return false;
+	}
+	else if(!pass.isPwdEasy()){
 		layer.msg('密码过于简单！',{icon:0,time:2000});
 		$("input[name='password']").focus();
 		return false;

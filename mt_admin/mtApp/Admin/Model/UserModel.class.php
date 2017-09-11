@@ -1,63 +1,8 @@
 <?php
 namespace Admin\Model;
 use Think\Model;
-class UserModel extends Model
+class UserModel extends BaseModel
 {
-	// 验证数据
-	protected $_validate = array(
-		array('id','require','未知用户！'),
-		array('username','require','用户名不能为空！'),
-		array('username','','用户已存在！',1,'unique',3),
-		array('username','3,16','用户名长度需在3-16位！',1,'length',1),
-		array('password','require','密码不能为空！'),
-		array('repassword','require','确认密码不能为空！'),
-		array('password','6,32','密码最短为6位！',0,'length'),
-		array('password','repassword','请输入相同密码！',1,'confirm',1),
-		array('telephone','11','手机位数错误！',0,'length'),
-		array('telephone','require','请输入手机！'),
-		array('telephone','/^(\(\d{3,4}\)|\d{3,4}-|\s)?\d{7,14}$/','手机格式错误！',0,'regex'),
-		array('email','require','请输入email！'),
-		array('email','email','请输入正确的email！',0),
-		array('role','require','用户角色不能为空！'),
-		array('role','verifyRole','用户角色不存在！',0,'function')
-	);
-
-	// 判断 角色id 是否存在
-	public function verifyRole()
-	{
-		$arr = array_values( M('auth_group')->field('id')->select() );
-		return in_array(I('post.role'),$arr) ? true : false;
-	}
-
-	// 自动完成
-	protected $_auto = array(
-		array('addtime','time',1,'function'),
-		array('password','encrypt',3,'callback'),
-		array('des','setDes',1,'callback'),
-		array('des','setDes',2,'callback'),
-		array('rolename','setRoleName',1,'callback'),
-		array('rolename','setRoleName',2,'callback')
-	);
-
-	/* 给密码加密 */
-	public function encrypt()
-	{
-		if(empty(I('post.password'))) return false;
-		return md5(crypt(I('post.password/s'), C('SALT')));
-	}
-
-	// 设置备注
-	public function setDes()
-	{
-		return empty(trim(I('post.des/s'))) ? '无' : I('post.des/s');
-	}
-
-	// 设置 角色名称 
-	public function setRoleName()
-	{
-		return array_values(M('auth_group')->field('title')->where('id='.I('post.role'))->find())[0];
-	}
-
 	// 获取用户列表
 	public function getUserlist($data)
 	{
@@ -140,9 +85,8 @@ class UserModel extends Model
 	// 单独获取一个用户的信息
 	public function findUserInfo($data)
 	{
-		$arr = array('id','username','telephone','email','role','des');
+		$arr = array('id','username','telephone','email','role','rolename','des');
 		$adminList = $this->field($arr)->where($data)->find();
-		$adminList['password'] = substr($adminList['password'],0,8);
 		return $adminList;
 	}
 
@@ -168,13 +112,6 @@ class UserModel extends Model
 		$data['status'] = $res['status'] == 1 ? -99 : 1;
 		$aff = $this->where('id='.$id)->save($data);
 		return $aff;
-	}
-	// 验证密码是否改动
-	public function checkPassword($id,$password)
-	{
-		$pass = $this->field("password")->where("id=".$id)->find();
-		$pass1 = substr($pass['password'],0,8);
-		return $pass1 == $password ? $pass['password'] : false;
 	}
 
 	// 登录验证用户名是否存在

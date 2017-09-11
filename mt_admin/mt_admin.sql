@@ -16,8 +16,8 @@
 CREATE DATABASE IF NOT EXISTS `mtadmin` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `mtadmin`;
 
--- 导出  表 mtadmin.dmt_auth_group 结构
-CREATE TABLE IF NOT EXISTS `dmt_auth_group` (
+-- 导出  表 mtadmin.mt_auth_group 结构
+CREATE TABLE IF NOT EXISTS `mt_auth_group` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `title` char(100) NOT NULL DEFAULT '' COMMENT '用户组中文名称',
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态：为1正常，为0禁用',
@@ -27,15 +27,15 @@ CREATE TABLE IF NOT EXISTS `dmt_auth_group` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='用户组表';
 
--- 正在导出表  mtadmin.dmt_auth_group 的数据：~2 rows (大约)
-/*!40000 ALTER TABLE `dmt_auth_group` DISABLE KEYS */;
-INSERT INTO `dmt_auth_group` (`id`, `title`, `status`, `rules`, `des`, `addtime`) VALUES
-	(1, '超级管理员', 1, '1,2,3,4,5,6,7,8,9,10,11,12,33,34,35,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64', '无', 1504877885),
-	(2, '管理员', 1, '1,2,3,4,5,6,7,8,9,10,11,12,33,34,35,13,14,15,16,17,18,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64', '无', 1504877907);
-/*!40000 ALTER TABLE `dmt_auth_group` ENABLE KEYS */;
+-- 正在导出表  mtadmin.mt_auth_group 的数据：~2 rows (大约)
+/*!40000 ALTER TABLE `mt_auth_group` DISABLE KEYS */;
+INSERT INTO `mt_auth_group` (`id`, `title`, `status`, `rules`, `des`, `addtime`) VALUES
+	(1, '超级管理员', 1, '1,2,3,4,5,6,7,8,9,10,11,12,33,34,35,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,62,63,65', '无', 1504877885),
+	(2, '管理员', 1, '1,2,3,4,5,6,7,8,9,10,11,12,33,34,35,13,14,15,16,17,18,19,20,25,29,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,62,63,65', '无', 1504877907);
+/*!40000 ALTER TABLE `mt_auth_group` ENABLE KEYS */;
 
--- 导出  表 mtadmin.dmt_auth_group_access 结构
-CREATE TABLE IF NOT EXISTS `dmt_auth_group_access` (
+-- 导出  表 mtadmin.mt_auth_group_access 结构
+CREATE TABLE IF NOT EXISTS `mt_auth_group_access` (
   `uid` mediumint(8) unsigned NOT NULL COMMENT '用户id',
   `group_id` mediumint(8) unsigned NOT NULL COMMENT '用户组id',
   UNIQUE KEY `uid_group_id` (`uid`,`group_id`),
@@ -43,15 +43,16 @@ CREATE TABLE IF NOT EXISTS `dmt_auth_group_access` (
   KEY `group_id` (`group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='用户组明细表';
 
--- 正在导出表  mtadmin.dmt_auth_group_access 的数据：~2 rows (大约)
-/*!40000 ALTER TABLE `dmt_auth_group_access` DISABLE KEYS */;
-INSERT INTO `dmt_auth_group_access` (`uid`, `group_id`) VALUES
+-- 正在导出表  mtadmin.mt_auth_group_access 的数据：~2 rows (大约)
+/*!40000 ALTER TABLE `mt_auth_group_access` DISABLE KEYS */;
+INSERT INTO `mt_auth_group_access` (`uid`, `group_id`) VALUES
 	(1, 2),
-	(2, 1);
-/*!40000 ALTER TABLE `dmt_auth_group_access` ENABLE KEYS */;
+	(2, 1),
+	(3, 2);
+/*!40000 ALTER TABLE `mt_auth_group_access` ENABLE KEYS */;
 
--- 导出  表 mtadmin.dmt_auth_rule 结构
-CREATE TABLE IF NOT EXISTS `dmt_auth_rule` (
+-- 导出  表 mtadmin.mt_auth_rule 结构
+CREATE TABLE IF NOT EXISTS `mt_auth_rule` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键',
   `pid` mediumint(8) unsigned NOT NULL DEFAULT '0' COMMENT '父id',
   `name` char(80) NOT NULL DEFAULT '' COMMENT '规则唯一标识',
@@ -64,11 +65,11 @@ CREATE TABLE IF NOT EXISTS `dmt_auth_rule` (
   `iconfont` char(50) NOT NULL COMMENT '图标编码',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='规则表';
+) ENGINE=InnoDB AUTO_INCREMENT=66 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='规则表';
 
--- 正在导出表  mtadmin.dmt_auth_rule 的数据：~49 rows (大约)
-/*!40000 ALTER TABLE `dmt_auth_rule` DISABLE KEYS */;
-INSERT INTO `dmt_auth_rule` (`id`, `pid`, `name`, `title`, `type`, `status`, `condition`, `des`, `addtime`, `iconfont`) VALUES
+-- 正在导出表  mtadmin.mt_auth_rule 的数据：~49 rows (大约)
+/*!40000 ALTER TABLE `mt_auth_rule` DISABLE KEYS */;
+INSERT INTO `mt_auth_rule` (`id`, `pid`, `name`, `title`, `type`, `status`, `condition`, `des`, `addtime`, `iconfont`) VALUES
 	(1, 0, 'News/news', '资讯管理', 1, 1, '', '资讯管理目录', 1504841989, '&#xe616;'),
 	(2, 1, 'News/index', '资讯管理', 1, 1, '', '资讯管理页面', 1504842042, ''),
 	(3, 2, 'News/addNews', '添加资讯', 1, 1, '', '添加资讯的按钮', 1504842630, ''),
@@ -129,14 +130,13 @@ INSERT INTO `dmt_auth_rule` (`id`, `pid`, `name`, `title`, `type`, `status`, `co
 	(58, 57, 'Jobs/index', '招聘信息', 1, 1, '', '招聘信息的页面', 1504863428, ''),
 	(59, 0, 'System/sys', '系统管理', 1, 1, '', '系统管理的目录', 1504863660, '&#xe62e;'),
 	(60, 59, 'System/systembase', '网站基本设置', 1, 1, '', '网站基本设置的页面', 1504863900, ''),
-	(61, 59, 'System/changepwd', '用户密码修改', 1, 1, '', '用户密码修改的页面', 1504863941, ''),
 	(62, 59, 'System/setcontact', '联系栏设置', 1, 1, '', '联系栏设置的页面', 1504864006, ''),
 	(63, 59, 'System/setqq', '联系QQ管理', 1, 1, '', '联系QQ管理的页面', 1504864046, ''),
-	(64, 59, 'System/logList', '登录日志', 1, 1, '', '登录日志的页面', 1504864088, '');
-/*!40000 ALTER TABLE `dmt_auth_rule` ENABLE KEYS */;
+	(65, 59, 'System/logList', '登录日志', 1, 1, '', '登录日志的页面', 1505107812, '');
+/*!40000 ALTER TABLE `mt_auth_rule` ENABLE KEYS */;
 
--- 导出  表 mtadmin.dmt_buyeraddress 结构
-CREATE TABLE IF NOT EXISTS `dmt_buyeraddress` (
+-- 导出  表 mtadmin.mt_buyeraddress 结构
+CREATE TABLE IF NOT EXISTS `mt_buyeraddress` (
   `auto_id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
   `receiver_name` varchar(50) NOT NULL COMMENT '收货人',
   `receiver_phonenum` varchar(32) NOT NULL COMMENT '手机号码',
@@ -144,14 +144,14 @@ CREATE TABLE IF NOT EXISTS `dmt_buyeraddress` (
   PRIMARY KEY (`auto_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='create by cpy 2017/2/10\n买家地址表';
 
--- 正在导出表  mtadmin.dmt_buyeraddress 的数据：~1 rows (大约)
-/*!40000 ALTER TABLE `dmt_buyeraddress` DISABLE KEYS */;
-INSERT INTO `dmt_buyeraddress` (`auto_id`, `receiver_name`, `receiver_phonenum`, `receiver_address`) VALUES
+-- 正在导出表  mtadmin.mt_buyeraddress 的数据：~1 rows (大约)
+/*!40000 ALTER TABLE `mt_buyeraddress` DISABLE KEYS */;
+INSERT INTO `mt_buyeraddress` (`auto_id`, `receiver_name`, `receiver_phonenum`, `receiver_address`) VALUES
 	(1, '陈', '18279409347', '国际企业中心');
-/*!40000 ALTER TABLE `dmt_buyeraddress` ENABLE KEYS */;
+/*!40000 ALTER TABLE `mt_buyeraddress` ENABLE KEYS */;
 
--- 导出  表 mtadmin.dmt_category 结构
-CREATE TABLE IF NOT EXISTS `dmt_category` (
+-- 导出  表 mtadmin.mt_category 结构
+CREATE TABLE IF NOT EXISTS `mt_category` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `imgpath` varchar(255) DEFAULT NULL,
   `imgname` varchar(255) DEFAULT NULL,
@@ -164,16 +164,16 @@ CREATE TABLE IF NOT EXISTS `dmt_category` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=gbk;
 
--- 正在导出表  mtadmin.dmt_category 的数据：~3 rows (大约)
-/*!40000 ALTER TABLE `dmt_category` DISABLE KEYS */;
-INSERT INTO `dmt_category` (`id`, `imgpath`, `imgname`, `catename`, `des`, `status`, `addtime`, `refreshtime`, `pid`) VALUES
+-- 正在导出表  mtadmin.mt_category 的数据：~3 rows (大约)
+/*!40000 ALTER TABLE `mt_category` DISABLE KEYS */;
+INSERT INTO `mt_category` (`id`, `imgpath`, `imgname`, `catename`, `des`, `status`, `addtime`, `refreshtime`, `pid`) VALUES
 	(17, '/Uploads/cate_img/20161227/58623a794d64b.jpg', '永不关上的门', '新闻动态', '永不关上的门永不关上的门永不关上的门', '1', 1482830330, 0, 0),
 	(18, '/Uploads/cate_img/20161227/58623e2846616.jpg', '父爱如山', '时事新闻', '父爱如山父爱如山父爱如山', '1', 1482833448, 0, 17),
 	(20, '/Uploads/cate_img/20161228/586362672b7e2.jpg', '农村电商合作', '商业合作', '农村电商合作农村电商合作农村电商合作', '1', 1482908263, 0, 18);
-/*!40000 ALTER TABLE `dmt_category` ENABLE KEYS */;
+/*!40000 ALTER TABLE `mt_category` ENABLE KEYS */;
 
--- 导出  表 mtadmin.dmt_contacttype 结构
-CREATE TABLE IF NOT EXISTS `dmt_contacttype` (
+-- 导出  表 mtadmin.mt_contacttype 结构
+CREATE TABLE IF NOT EXISTS `mt_contacttype` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
   `callnum` varchar(255) DEFAULT NULL COMMENT '固定电话',
   `phonenum` varchar(255) DEFAULT NULL COMMENT '手机号码',
@@ -182,12 +182,12 @@ CREATE TABLE IF NOT EXISTS `dmt_contacttype` (
   UNIQUE KEY `id_UNIQUE` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='create by chenpy 2016-12-8\n联系方法表';
 
--- 正在导出表  mtadmin.dmt_contacttype 的数据：~0 rows (大约)
-/*!40000 ALTER TABLE `dmt_contacttype` DISABLE KEYS */;
-/*!40000 ALTER TABLE `dmt_contacttype` ENABLE KEYS */;
+-- 正在导出表  mtadmin.mt_contacttype 的数据：~0 rows (大约)
+/*!40000 ALTER TABLE `mt_contacttype` DISABLE KEYS */;
+/*!40000 ALTER TABLE `mt_contacttype` ENABLE KEYS */;
 
--- 导出  表 mtadmin.dmt_flink 结构
-CREATE TABLE IF NOT EXISTS `dmt_flink` (
+-- 导出  表 mtadmin.mt_flink 结构
+CREATE TABLE IF NOT EXISTS `mt_flink` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `comname` varchar(255) NOT NULL,
   `url` varchar(255) NOT NULL,
@@ -197,14 +197,14 @@ CREATE TABLE IF NOT EXISTS `dmt_flink` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=gbk;
 
--- 正在导出表  mtadmin.dmt_flink 的数据：~1 rows (大约)
-/*!40000 ALTER TABLE `dmt_flink` DISABLE KEYS */;
-INSERT INTO `dmt_flink` (`id`, `comname`, `url`, `logo`, `status`, `addtime`) VALUES
+-- 正在导出表  mtadmin.mt_flink 的数据：~1 rows (大约)
+/*!40000 ALTER TABLE `mt_flink` DISABLE KEYS */;
+INSERT INTO `mt_flink` (`id`, `comname`, `url`, `logo`, `status`, `addtime`) VALUES
 	(2, '百度', 'http://www.baidu.com', '', 1, 1482912178);
-/*!40000 ALTER TABLE `dmt_flink` ENABLE KEYS */;
+/*!40000 ALTER TABLE `mt_flink` ENABLE KEYS */;
 
--- 导出  表 mtadmin.dmt_goods 结构
-CREATE TABLE IF NOT EXISTS `dmt_goods` (
+-- 导出  表 mtadmin.mt_goods 结构
+CREATE TABLE IF NOT EXISTS `mt_goods` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
   `goodsname` varchar(100) NOT NULL COMMENT '商品名称',
   `goodsimg` varchar(100) DEFAULT NULL COMMENT '商品图片',
@@ -226,9 +226,9 @@ CREATE TABLE IF NOT EXISTS `dmt_goods` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COMMENT='create by cpy 2017-2-7\n商品表';
 
--- 正在导出表  mtadmin.dmt_goods 的数据：~10 rows (大约)
-/*!40000 ALTER TABLE `dmt_goods` DISABLE KEYS */;
-INSERT INTO `dmt_goods` (`id`, `goodsname`, `goodsimg`, `goodscateid`, `goodscatename`, `goodsabstract`, `goodscontent`, `goodsorig`, `goodsprice`, `goodsstatus`, `ismail`, `mailprice`, `refreshtime`, `addtime`, `res1`, `res2`, `sendpoints`, `madein`) VALUES
+-- 正在导出表  mtadmin.mt_goods 的数据：~10 rows (大约)
+/*!40000 ALTER TABLE `mt_goods` DISABLE KEYS */;
+INSERT INTO `mt_goods` (`id`, `goodsname`, `goodsimg`, `goodscateid`, `goodscatename`, `goodsabstract`, `goodscontent`, `goodsorig`, `goodsprice`, `goodsstatus`, `ismail`, `mailprice`, `refreshtime`, `addtime`, `res1`, `res2`, `sendpoints`, `madein`) VALUES
 	(16, '卡片', '/Uploads/goodsImg/20170621/5949d6552b913.png', 1, '', '很好玩的卡片，适合儿童的智力发育', '&lt;p&gt;很好玩的卡片，适合儿童的智力发育&lt;/p&gt;&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;很好玩的卡片，适合儿童的智力发育&lt;/p&gt;', 28.00, 20.00, -99, 0, 0.99, 1498219444, 1498011221, NULL, NULL, 2, '赣州'),
 	(17, '被子', '/Uploads/goodsImg/20170621/5949d6ef38841.png', 1, '', '保暖的被子，柔软有弹性', '&lt;p&gt;保暖的被子，柔软有弹性&lt;/p&gt;&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;保暖的被子，柔软有弹性&lt;/p&gt;', 3200.00, 2800.00, -99, 0, 0.99, 1498218970, 1498011375, NULL, NULL, 28, '赣州'),
 	(18, '测试', '/Uploads/goodsImg/20170623/594d214589f8b.jpg', 3, '电饭煲', '测试测试测试测试测试测试测试测试测试测试测试测试', '&lt;p&gt;测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试&lt;/p&gt;', 9999.99, 1500.00, -1, 1, 0.00, 1498267277, 1498012482, NULL, NULL, 10, '赣州'),
@@ -239,10 +239,10 @@ INSERT INTO `dmt_goods` (`id`, `goodsname`, `goodsimg`, `goodscateid`, `goodscat
 	(23, '', '/Uploads/goodsImg/20170621/594a4524d600f.png', 0, '', '', '&lt;p&gt;很好用的手机，推荐给大家&lt;/p&gt;&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;很好用的手机，推荐给大家&lt;/p&gt;&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;很好用的手机，推荐给大家&lt;/p&gt;', 6400.00, 5600.00, -99, 0, 10.00, 1498216038, 1498039588, NULL, NULL, 56, '赣州'),
 	(24, '钱包', '/Uploads/goodsImg/20170623/594d212c5f746.jpg', 3, '电饭煲', '很好用的钱包很好用的钱包很好用的钱包', '&lt;p&gt;很好用的钱包&lt;/p&gt;&lt;p&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;很好用的钱包&lt;/p&gt;', 200.00, 100.00, 1, 1, 0.00, 1498268277, 1498222603, NULL, NULL, 2, '赣州'),
 	(25, '鼠标', '/Uploads/goodsImg/20170623/594d20d858fdd.png', 3, '电饭煲', '很好用的鼠标噢噢噢噢', '&lt;p&gt;很好用的鼠标噢噢噢噢很好用的鼠很好用的鼠标噢噢噢噢标噢噢噢噢&lt;/p&gt;', 78.00, 60.00, -1, 1, 0.00, 1498267277, 1498222991, NULL, NULL, 60, '赣州');
-/*!40000 ALTER TABLE `dmt_goods` ENABLE KEYS */;
+/*!40000 ALTER TABLE `mt_goods` ENABLE KEYS */;
 
--- 导出  表 mtadmin.dmt_goodscate 结构
-CREATE TABLE IF NOT EXISTS `dmt_goodscate` (
+-- 导出  表 mtadmin.mt_goodscate 结构
+CREATE TABLE IF NOT EXISTS `mt_goodscate` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
   `classify` varchar(50) NOT NULL COMMENT '分类名称',
   `cateimg` varchar(200) NOT NULL COMMENT '图片路径',
@@ -255,29 +255,29 @@ CREATE TABLE IF NOT EXISTS `dmt_goodscate` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
--- 正在导出表  mtadmin.dmt_goodscate 的数据：~3 rows (大约)
-/*!40000 ALTER TABLE `dmt_goodscate` DISABLE KEYS */;
-INSERT INTO `dmt_goodscate` (`id`, `classify`, `cateimg`, `catedes`, `catestatus`, `cateaddtime`, `res1`, `res2`, `pid`) VALUES
+-- 正在导出表  mtadmin.mt_goodscate 的数据：~3 rows (大约)
+/*!40000 ALTER TABLE `mt_goodscate` DISABLE KEYS */;
+INSERT INTO `mt_goodscate` (`id`, `classify`, `cateimg`, `catedes`, `catestatus`, `cateaddtime`, `res1`, `res2`, `pid`) VALUES
 	(1, '电器', '/Uploads/classifyImg/20170208/589a8152e8704.png', '00', '1', '1486462038', NULL, NULL, 0),
 	(2, '家用电器', '/img/default.jpg', '', '1', '1504458061', NULL, NULL, 1),
 	(3, '电饭煲', '/img/default.jpg', '', '1', '1504458077', NULL, NULL, 2);
-/*!40000 ALTER TABLE `dmt_goodscate` ENABLE KEYS */;
+/*!40000 ALTER TABLE `mt_goodscate` ENABLE KEYS */;
 
--- 导出  表 mtadmin.dmt_grade 结构
-CREATE TABLE IF NOT EXISTS `dmt_grade` (
+-- 导出  表 mtadmin.mt_grade 结构
+CREATE TABLE IF NOT EXISTS `mt_grade` (
   `id` int(5) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
   `grade` varchar(50) NOT NULL DEFAULT '0' COMMENT '等级名',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='create by chenpy 2016-12-21\r\n等级表';
 
--- 正在导出表  mtadmin.dmt_grade 的数据：~1 rows (大约)
-/*!40000 ALTER TABLE `dmt_grade` DISABLE KEYS */;
-INSERT INTO `dmt_grade` (`id`, `grade`) VALUES
+-- 正在导出表  mtadmin.mt_grade 的数据：~1 rows (大约)
+/*!40000 ALTER TABLE `mt_grade` DISABLE KEYS */;
+INSERT INTO `mt_grade` (`id`, `grade`) VALUES
 	(1, '超级管理员');
-/*!40000 ALTER TABLE `dmt_grade` ENABLE KEYS */;
+/*!40000 ALTER TABLE `mt_grade` ENABLE KEYS */;
 
--- 导出  表 mtadmin.dmt_jobs 结构
-CREATE TABLE IF NOT EXISTS `dmt_jobs` (
+-- 导出  表 mtadmin.mt_jobs 结构
+CREATE TABLE IF NOT EXISTS `mt_jobs` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
   `job` varchar(50) NOT NULL COMMENT '职位名称',
   `des` mediumtext NOT NULL COMMENT '内容',
@@ -287,25 +287,25 @@ CREATE TABLE IF NOT EXISTS `dmt_jobs` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='create by chenpy 2016-12-22\r\n招聘职位表';
 
--- 正在导出表  mtadmin.dmt_jobs 的数据：~1 rows (大约)
-/*!40000 ALTER TABLE `dmt_jobs` DISABLE KEYS */;
-INSERT INTO `dmt_jobs` (`id`, `job`, `des`, `addtime`, `status`, `views`) VALUES
+-- 正在导出表  mtadmin.mt_jobs 的数据：~1 rows (大约)
+/*!40000 ALTER TABLE `mt_jobs` DISABLE KEYS */;
+INSERT INTO `mt_jobs` (`id`, `job`, `des`, `addtime`, `status`, `views`) VALUES
 	(1, 'PHP程序员', '&lt;p&gt;event.params.data.fAutoID&lt;/p&gt;', 1482912331, '1', 0);
-/*!40000 ALTER TABLE `dmt_jobs` ENABLE KEYS */;
+/*!40000 ALTER TABLE `mt_jobs` ENABLE KEYS */;
 
--- 导出  表 mtadmin.dmt_log 结构
-CREATE TABLE IF NOT EXISTS `dmt_log` (
+-- 导出  表 mtadmin.mt_log 结构
+CREATE TABLE IF NOT EXISTS `mt_log` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `visitor` varchar(100) NOT NULL,
   `content` varchar(200) NOT NULL COMMENT '登录内容',
   `ip` varchar(50) NOT NULL COMMENT 'ip地址',
   `logintime` int(10) NOT NULL COMMENT '登录时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=104 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='日志表';
+) ENGINE=InnoDB AUTO_INCREMENT=119 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='日志表';
 
--- 正在导出表  mtadmin.dmt_log 的数据：~98 rows (大约)
-/*!40000 ALTER TABLE `dmt_log` DISABLE KEYS */;
-INSERT INTO `dmt_log` (`id`, `visitor`, `content`, `ip`, `logintime`) VALUES
+-- 正在导出表  mtadmin.mt_log 的数据：~106 rows (大约)
+/*!40000 ALTER TABLE `mt_log` DISABLE KEYS */;
+INSERT INTO `mt_log` (`id`, `visitor`, `content`, `ip`, `logintime`) VALUES
 	(3, 'admin', '登陆成功', '115.148.65.162', 1482227911),
 	(4, 'admin', '登陆成功', '115.148.65.162', 1482229466),
 	(5, 'admin', '登陆成功', '115.148.65.162', 1482230168),
@@ -406,11 +406,26 @@ INSERT INTO `dmt_log` (`id`, `visitor`, `content`, `ip`, `logintime`) VALUES
 	(100, 'administrator', '登陆成功', '0.0.0.0', 1504884985),
 	(101, 'administrator', '登陆成功', '0.0.0.0', 1504919198),
 	(102, 'admin', '登陆成功', '0.0.0.0', 1504919305),
-	(103, 'administrator', '登陆成功', '0.0.0.0', 1504919520);
-/*!40000 ALTER TABLE `dmt_log` ENABLE KEYS */;
+	(103, 'administrator', '登陆成功', '0.0.0.0', 1504919520),
+	(104, 'admin', '登陆成功', '0.0.0.0', 1504958070),
+	(105, 'administrator', '登陆成功', '0.0.0.0', 1504958125),
+	(106, 'administrator', '登陆成功', '0.0.0.0', 1505008659),
+	(107, 'administrator', '登陆成功', '0.0.0.0', 1505035703),
+	(108, 'administrator', '登陆成功', '0.0.0.0', 1505093594),
+	(109, 'admin', '登陆成功', '0.0.0.0', 1505101840),
+	(110, 'administrator', '登陆成功', '0.0.0.0', 1505102855),
+	(111, 'admin', '登陆成功', '0.0.0.0', 1505102900),
+	(112, 'administrator', '登陆成功', '0.0.0.0', 1505103162),
+	(113, 'admin', '登陆成功', '0.0.0.0', 1505104644),
+	(114, 'administrator', '登陆成功', '0.0.0.0', 1505107260),
+	(115, 'admin', '登陆成功', '0.0.0.0', 1505107330),
+	(116, 'administrator', '登陆成功', '0.0.0.0', 1505108882),
+	(117, 'admin', '登陆成功', '0.0.0.0', 1505115175),
+	(118, 'administrator', '登陆成功', '0.0.0.0', 1505116971);
+/*!40000 ALTER TABLE `mt_log` ENABLE KEYS */;
 
--- 导出  表 mtadmin.dmt_members 结构
-CREATE TABLE IF NOT EXISTS `dmt_members` (
+-- 导出  表 mtadmin.mt_members 结构
+CREATE TABLE IF NOT EXISTS `mt_members` (
   `auto_id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ＩＤ',
   `wx_nickname` varchar(50) NOT NULL COMMENT '用户昵称',
   `wx_headimgurl` varchar(200) NOT NULL COMMENT '用户头像',
@@ -427,46 +442,46 @@ CREATE TABLE IF NOT EXISTS `dmt_members` (
   PRIMARY KEY (`auto_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='竹乡联萌会员表';
 
--- 正在导出表  mtadmin.dmt_members 的数据：~1 rows (大约)
-/*!40000 ALTER TABLE `dmt_members` DISABLE KEYS */;
-INSERT INTO `dmt_members` (`auto_id`, `wx_nickname`, `wx_headimgurl`, `wx_city`, `wx_openid`, `subscribe_time`, `wx_sex`, `members_status`, `recent_time`, `delete_time`, `restore_time`, `res1`, `res2`) VALUES
+-- 正在导出表  mtadmin.mt_members 的数据：~1 rows (大约)
+/*!40000 ALTER TABLE `mt_members` DISABLE KEYS */;
+INSERT INTO `mt_members` (`auto_id`, `wx_nickname`, `wx_headimgurl`, `wx_city`, `wx_openid`, `subscribe_time`, `wx_sex`, `members_status`, `recent_time`, `delete_time`, `restore_time`, `res1`, `res2`) VALUES
 	(4, '程序猿豆腐', 'http://wx.qlogo.cn/mmopen/PiajxSqBRaEJlz556iafUPOyDM7ia9aSpcT8arFCjv9S1tyuicz5b3pmzgvpLC1vMRcB5DrurfqRdwMzTanDldhVLQ/0', '江西 赣州', 'ovkkfxFjMIbALZ3_ZBRobvYboEI4', '1484040473', '1', -1, '1487384275', 1491481347, 1491481354, NULL, NULL);
-/*!40000 ALTER TABLE `dmt_members` ENABLE KEYS */;
+/*!40000 ALTER TABLE `mt_members` ENABLE KEYS */;
 
--- 导出  表 mtadmin.dmt_members_sex 结构
-CREATE TABLE IF NOT EXISTS `dmt_members_sex` (
+-- 导出  表 mtadmin.mt_members_sex 结构
+CREATE TABLE IF NOT EXISTS `mt_members_sex` (
   `auto_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `sex_code` int(2) NOT NULL,
   `sex_name` varchar(32) NOT NULL,
   PRIMARY KEY (`auto_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='create by cpy 2017/2/16\n会员性别表';
 
--- 正在导出表  mtadmin.dmt_members_sex 的数据：~3 rows (大约)
-/*!40000 ALTER TABLE `dmt_members_sex` DISABLE KEYS */;
-INSERT INTO `dmt_members_sex` (`auto_id`, `sex_code`, `sex_name`) VALUES
+-- 正在导出表  mtadmin.mt_members_sex 的数据：~3 rows (大约)
+/*!40000 ALTER TABLE `mt_members_sex` DISABLE KEYS */;
+INSERT INTO `mt_members_sex` (`auto_id`, `sex_code`, `sex_name`) VALUES
 	(1, 1, '男'),
 	(2, 2, '女'),
 	(3, 0, '未知');
-/*!40000 ALTER TABLE `dmt_members_sex` ENABLE KEYS */;
+/*!40000 ALTER TABLE `mt_members_sex` ENABLE KEYS */;
 
--- 导出  表 mtadmin.dmt_members_status 结构
-CREATE TABLE IF NOT EXISTS `dmt_members_status` (
+-- 导出  表 mtadmin.mt_members_status 结构
+CREATE TABLE IF NOT EXISTS `mt_members_status` (
   `auto_id` int(5) unsigned NOT NULL AUTO_INCREMENT,
   `status_code` int(5) NOT NULL,
   `status_name` varchar(32) NOT NULL,
   PRIMARY KEY (`auto_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='create by cpy 2017/2/17';
 
--- 正在导出表  mtadmin.dmt_members_status 的数据：~3 rows (大约)
-/*!40000 ALTER TABLE `dmt_members_status` DISABLE KEYS */;
-INSERT INTO `dmt_members_status` (`auto_id`, `status_code`, `status_name`) VALUES
+-- 正在导出表  mtadmin.mt_members_status 的数据：~3 rows (大约)
+/*!40000 ALTER TABLE `mt_members_status` DISABLE KEYS */;
+INSERT INTO `mt_members_status` (`auto_id`, `status_code`, `status_name`) VALUES
 	(1, 1, '正常'),
 	(2, -1, '拉黑'),
 	(3, -99, '已删除');
-/*!40000 ALTER TABLE `dmt_members_status` ENABLE KEYS */;
+/*!40000 ALTER TABLE `mt_members_status` ENABLE KEYS */;
 
--- 导出  表 mtadmin.dmt_msg 结构
-CREATE TABLE IF NOT EXISTS `dmt_msg` (
+-- 导出  表 mtadmin.mt_msg 结构
+CREATE TABLE IF NOT EXISTS `mt_msg` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `company` varchar(255) NOT NULL,
@@ -478,12 +493,12 @@ CREATE TABLE IF NOT EXISTS `dmt_msg` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=gbk;
 
--- 正在导出表  mtadmin.dmt_msg 的数据：~0 rows (大约)
-/*!40000 ALTER TABLE `dmt_msg` DISABLE KEYS */;
-/*!40000 ALTER TABLE `dmt_msg` ENABLE KEYS */;
+-- 正在导出表  mtadmin.mt_msg 的数据：~0 rows (大约)
+/*!40000 ALTER TABLE `mt_msg` DISABLE KEYS */;
+/*!40000 ALTER TABLE `mt_msg` ENABLE KEYS */;
 
--- 导出  表 mtadmin.dmt_news 结构
-CREATE TABLE IF NOT EXISTS `dmt_news` (
+-- 导出  表 mtadmin.mt_news 结构
+CREATE TABLE IF NOT EXISTS `mt_news` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `title` varchar(100) NOT NULL,
   `icon` varchar(100) NOT NULL,
@@ -500,15 +515,15 @@ CREATE TABLE IF NOT EXISTS `dmt_news` (
   KEY `title` (`title`,`type`)
 ) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=gbk;
 
--- 正在导出表  mtadmin.dmt_news 的数据：~2 rows (大约)
-/*!40000 ALTER TABLE `dmt_news` DISABLE KEYS */;
-INSERT INTO `dmt_news` (`id`, `title`, `icon`, `iconname`, `author`, `type`, `abstract`, `tags`, `status`, `views`, `addtime`, `refreshtime`) VALUES
+-- 正在导出表  mtadmin.mt_news 的数据：~2 rows (大约)
+/*!40000 ALTER TABLE `mt_news` DISABLE KEYS */;
+INSERT INTO `mt_news` (`id`, `title`, `icon`, `iconname`, `author`, `type`, `abstract`, `tags`, `status`, `views`, `addtime`, `refreshtime`) VALUES
 	(26, '测试文章1', '/Uploads/news_icon/20161227/586210303901a.jpg', '无动为大去', 'df', 20, '测试用的111111111111111111111', '', 1, 0, 1482759208, 0),
 	(27, '公司简介', '', '', '', -1, '', '', 2, 0, 1482761621, 0);
-/*!40000 ALTER TABLE `dmt_news` ENABLE KEYS */;
+/*!40000 ALTER TABLE `mt_news` ENABLE KEYS */;
 
--- 导出  表 mtadmin.dmt_newscontent 结构
-CREATE TABLE IF NOT EXISTS `dmt_newscontent` (
+-- 导出  表 mtadmin.mt_newscontent 结构
+CREATE TABLE IF NOT EXISTS `mt_newscontent` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `newsid` int(10) NOT NULL,
   `keywords` varchar(255) NOT NULL,
@@ -517,15 +532,15 @@ CREATE TABLE IF NOT EXISTS `dmt_newscontent` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=gbk;
 
--- 正在导出表  mtadmin.dmt_newscontent 的数据：~2 rows (大约)
-/*!40000 ALTER TABLE `dmt_newscontent` DISABLE KEYS */;
-INSERT INTO `dmt_newscontent` (`id`, `newsid`, `keywords`, `describe`, `content`) VALUES
+-- 正在导出表  mtadmin.mt_newscontent 的数据：~2 rows (大约)
+/*!40000 ALTER TABLE `mt_newscontent` DISABLE KEYS */;
+INSERT INTO `mt_newscontent` (`id`, `newsid`, `keywords`, `describe`, `content`) VALUES
 	(32, 26, '测试1,测试2,测试3', '我觉得哦啊收到哦啊啥都弄', '&lt;p&gt;大大神发发发沙发我去打饭&lt;/p&gt;'),
 	(33, 27, '', '', '');
-/*!40000 ALTER TABLE `dmt_newscontent` ENABLE KEYS */;
+/*!40000 ALTER TABLE `mt_newscontent` ENABLE KEYS */;
 
--- 导出  表 mtadmin.dmt_orderinfo 结构
-CREATE TABLE IF NOT EXISTS `dmt_orderinfo` (
+-- 导出  表 mtadmin.mt_orderinfo 结构
+CREATE TABLE IF NOT EXISTS `mt_orderinfo` (
   `auto_id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
   `order_numbers` varchar(50) NOT NULL COMMENT '订单号',
   `goods_name` varchar(100) NOT NULL COMMENT '商品名称',
@@ -535,14 +550,14 @@ CREATE TABLE IF NOT EXISTS `dmt_orderinfo` (
   PRIMARY KEY (`auto_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='create by cpy 2017/2/10';
 
--- 正在导出表  mtadmin.dmt_orderinfo 的数据：~1 rows (大约)
-/*!40000 ALTER TABLE `dmt_orderinfo` DISABLE KEYS */;
-INSERT INTO `dmt_orderinfo` (`auto_id`, `order_numbers`, `goods_name`, `goods_img`, `buy_count`, `goods_price`) VALUES
+-- 正在导出表  mtadmin.mt_orderinfo 的数据：~1 rows (大约)
+/*!40000 ALTER TABLE `mt_orderinfo` DISABLE KEYS */;
+INSERT INTO `mt_orderinfo` (`auto_id`, `order_numbers`, `goods_name`, `goods_img`, `buy_count`, `goods_price`) VALUES
 	(1, '20170210123456 ', '竹子', '', 2, 125.00);
-/*!40000 ALTER TABLE `dmt_orderinfo` ENABLE KEYS */;
+/*!40000 ALTER TABLE `mt_orderinfo` ENABLE KEYS */;
 
--- 导出  表 mtadmin.dmt_orders 结构
-CREATE TABLE IF NOT EXISTS `dmt_orders` (
+-- 导出  表 mtadmin.mt_orders 结构
+CREATE TABLE IF NOT EXISTS `mt_orders` (
   `auto_id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
   `order_numbers` varchar(50) NOT NULL COMMENT '订单号',
   `goods_quantity` tinyint(5) NOT NULL COMMENT '商品数量',
@@ -556,32 +571,32 @@ CREATE TABLE IF NOT EXISTS `dmt_orders` (
   PRIMARY KEY (`auto_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='create by cpy 2017-2-10';
 
--- 正在导出表  mtadmin.dmt_orders 的数据：~1 rows (大约)
-/*!40000 ALTER TABLE `dmt_orders` DISABLE KEYS */;
-INSERT INTO `dmt_orders` (`auto_id`, `order_numbers`, `goods_quantity`, `order_createtime`, `order_status`, `order_total`, `buyer_openid`, `address_id`, `order_paytime`, `buyer_msg`) VALUES
+-- 正在导出表  mtadmin.mt_orders 的数据：~1 rows (大约)
+/*!40000 ALTER TABLE `mt_orders` DISABLE KEYS */;
+INSERT INTO `mt_orders` (`auto_id`, `order_numbers`, `goods_quantity`, `order_createtime`, `order_status`, `order_total`, `buyer_openid`, `address_id`, `order_paytime`, `buyer_msg`) VALUES
 	(1, '20170210123456', 3, '1354795563', 100, 253.01, 'ovkkfxFjMIbALZ3_ZBRobvYboEI4', 1, 1365989566, '原图');
-/*!40000 ALTER TABLE `dmt_orders` ENABLE KEYS */;
+/*!40000 ALTER TABLE `mt_orders` ENABLE KEYS */;
 
--- 导出  表 mtadmin.dmt_orderstatus 结构
-CREATE TABLE IF NOT EXISTS `dmt_orderstatus` (
+-- 导出  表 mtadmin.mt_orderstatus 结构
+CREATE TABLE IF NOT EXISTS `mt_orderstatus` (
   `auto_id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
   `status_code` int(11) NOT NULL COMMENT '状态码',
   `status_name` varchar(50) NOT NULL COMMENT '状态名称',
   PRIMARY KEY (`auto_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='create by cpy 2017-2-10\n订单状态表 ';
 
--- 正在导出表  mtadmin.dmt_orderstatus 的数据：~5 rows (大约)
-/*!40000 ALTER TABLE `dmt_orderstatus` DISABLE KEYS */;
-INSERT INTO `dmt_orderstatus` (`auto_id`, `status_code`, `status_name`) VALUES
+-- 正在导出表  mtadmin.mt_orderstatus 的数据：~5 rows (大约)
+/*!40000 ALTER TABLE `mt_orderstatus` DISABLE KEYS */;
+INSERT INTO `mt_orderstatus` (`auto_id`, `status_code`, `status_name`) VALUES
 	(1, -1, '已取消'),
 	(2, 1, '待付款'),
 	(3, 50, '已付款'),
 	(4, 100, '已发货'),
 	(5, 200, '已收货，订单完成');
-/*!40000 ALTER TABLE `dmt_orderstatus` ENABLE KEYS */;
+/*!40000 ALTER TABLE `mt_orderstatus` ENABLE KEYS */;
 
--- 导出  表 mtadmin.dmt_picture 结构
-CREATE TABLE IF NOT EXISTS `dmt_picture` (
+-- 导出  表 mtadmin.mt_picture 结构
+CREATE TABLE IF NOT EXISTS `mt_picture` (
   `id` tinyint(5) NOT NULL AUTO_INCREMENT,
   `type` tinyint(3) NOT NULL,
   `picname` varchar(255) NOT NULL,
@@ -592,27 +607,27 @@ CREATE TABLE IF NOT EXISTS `dmt_picture` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=gbk ROW_FORMAT=DYNAMIC;
 
--- 正在导出表  mtadmin.dmt_picture 的数据：~1 rows (大约)
-/*!40000 ALTER TABLE `dmt_picture` DISABLE KEYS */;
-INSERT INTO `dmt_picture` (`id`, `type`, `picname`, `picpath`, `des`, `addtime`, `status`) VALUES
+-- 正在导出表  mtadmin.mt_picture 的数据：~1 rows (大约)
+/*!40000 ALTER TABLE `mt_picture` DISABLE KEYS */;
+INSERT INTO `mt_picture` (`id`, `type`, `picname`, `picpath`, `des`, `addtime`, `status`) VALUES
 	(5, 1, '永不关上的门', '/Uploads/uploadPic/20161231/58671c6eb5687.jpg', '永不关上的门永不关上的门', 1483152497, '1');
-/*!40000 ALTER TABLE `dmt_picture` ENABLE KEYS */;
+/*!40000 ALTER TABLE `mt_picture` ENABLE KEYS */;
 
--- 导出  表 mtadmin.dmt_picturetype 结构
-CREATE TABLE IF NOT EXISTS `dmt_picturetype` (
+-- 导出  表 mtadmin.mt_picturetype 结构
+CREATE TABLE IF NOT EXISTS `mt_picturetype` (
   `id` tinyint(5) NOT NULL AUTO_INCREMENT,
   `typename` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=gbk ROW_FORMAT=DYNAMIC;
 
--- 正在导出表  mtadmin.dmt_picturetype 的数据：~1 rows (大约)
-/*!40000 ALTER TABLE `dmt_picturetype` DISABLE KEYS */;
-INSERT INTO `dmt_picturetype` (`id`, `typename`) VALUES
+-- 正在导出表  mtadmin.mt_picturetype 的数据：~1 rows (大约)
+/*!40000 ALTER TABLE `mt_picturetype` DISABLE KEYS */;
+INSERT INTO `mt_picturetype` (`id`, `typename`) VALUES
 	(1, '首页轮播');
-/*!40000 ALTER TABLE `dmt_picturetype` ENABLE KEYS */;
+/*!40000 ALTER TABLE `mt_picturetype` ENABLE KEYS */;
 
--- 导出  表 mtadmin.dmt_qqcontact 结构
-CREATE TABLE IF NOT EXISTS `dmt_qqcontact` (
+-- 导出  表 mtadmin.mt_qqcontact 结构
+CREATE TABLE IF NOT EXISTS `mt_qqcontact` (
   `id` int(5) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
   `qqnum` varchar(50) NOT NULL DEFAULT '0' COMMENT 'QQ号',
   `qqtitle` varchar(80) NOT NULL DEFAULT '0' COMMENT 'QQ标题',
@@ -620,14 +635,14 @@ CREATE TABLE IF NOT EXISTS `dmt_qqcontact` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='create by chenpy 2016-12-21\r\n资讯QQ 表';
 
--- 正在导出表  mtadmin.dmt_qqcontact 的数据：~1 rows (大约)
-/*!40000 ALTER TABLE `dmt_qqcontact` DISABLE KEYS */;
-INSERT INTO `dmt_qqcontact` (`id`, `qqnum`, `qqtitle`, `status`) VALUES
+-- 正在导出表  mtadmin.mt_qqcontact 的数据：~1 rows (大约)
+/*!40000 ALTER TABLE `mt_qqcontact` DISABLE KEYS */;
+INSERT INTO `mt_qqcontact` (`id`, `qqnum`, `qqtitle`, `status`) VALUES
 	(1, '473203432', '客服一', '1');
-/*!40000 ALTER TABLE `dmt_qqcontact` ENABLE KEYS */;
+/*!40000 ALTER TABLE `mt_qqcontact` ENABLE KEYS */;
 
--- 导出  表 mtadmin.dmt_user 结构
-CREATE TABLE IF NOT EXISTS `dmt_user` (
+-- 导出  表 mtadmin.mt_user 结构
+CREATE TABLE IF NOT EXISTS `mt_user` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
   `username` varchar(100) NOT NULL COMMENT '用户名',
   `password` varchar(100) NOT NULL COMMENT '用户密码',
@@ -646,17 +661,18 @@ CREATE TABLE IF NOT EXISTS `dmt_user` (
   `recentlyipaddr` varchar(50) NOT NULL DEFAULT '0.0.0.0' COMMENT '最近登录的ip',
   PRIMARY KEY (`id`),
   KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='create by chenpy 2016-12-20';
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='create by chenpy 2016-12-20';
 
--- 正在导出表  mtadmin.dmt_user 的数据：~2 rows (大约)
-/*!40000 ALTER TABLE `dmt_user` DISABLE KEYS */;
-INSERT INTO `dmt_user` (`id`, `username`, `password`, `telephone`, `email`, `role`, `rolename`, `status`, `online`, `addtime`, `des`, `loginnum`, `recentlylogintime`, `lastlogintime`, `lastipaddr`, `recentlyipaddr`) VALUES
-	(1, 'admin', '5edbdd6c82567e78db403fe0a8eb9f49', '18279409347', '473203432@qq.com', 2, '管理员', '1', '-1', 1504877109, '无', 6, 1504919305, 1504880527, '0.0.0.0', '0.0.0.0'),
-	(2, 'administrator', '3cd41089a01472c96089e8ae7eeaf5d9', '18279409347', '473203432@qq.com', 1, '超级管理员', '1', '-1', 1504878109, '无', 6, 1504919520, 1504919198, '0.0.0.0', '0.0.0.0');
-/*!40000 ALTER TABLE `dmt_user` ENABLE KEYS */;
+-- 正在导出表  mtadmin.mt_user 的数据：~2 rows (大约)
+/*!40000 ALTER TABLE `mt_user` DISABLE KEYS */;
+INSERT INTO `mt_user` (`id`, `username`, `password`, `telephone`, `email`, `role`, `rolename`, `status`, `online`, `addtime`, `des`, `loginnum`, `recentlylogintime`, `lastlogintime`, `lastipaddr`, `recentlyipaddr`) VALUES
+	(1, 'admin', '5edbdd6c82567e78db403fe0a8eb9f49', '18279409347', '473203432@qq.com', 2, '管理员', '1', '-1', 1504877109, '无', 12, 1505115175, 1505107330, '0.0.0.0', '0.0.0.0'),
+	(2, 'administrator', '3cd41089a01472c96089e8ae7eeaf5d9', '18279409347', '473203432@qq.com', 1, '超级管理员', '1', '-1', 1504878109, '无', 15, 1505116971, 1505108882, '0.0.0.0', '0.0.0.0'),
+	(3, 'test', '2116e35b698f69a23b6f998cfbb11955', '18279409347', '473203432@qq.com', 2, '管理员', '-99', '-1', 1505125418, '无大时代', 1, 0, 0, '0.0.0.0', '0.0.0.0');
+/*!40000 ALTER TABLE `mt_user` ENABLE KEYS */;
 
--- 导出  表 mtadmin.dmt_webbase 结构
-CREATE TABLE IF NOT EXISTS `dmt_webbase` (
+-- 导出  表 mtadmin.mt_webbase 结构
+CREATE TABLE IF NOT EXISTS `mt_webbase` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增id',
   `webtitle` varchar(255) DEFAULT NULL COMMENT '网站名称',
   `keyword` varchar(255) DEFAULT NULL COMMENT '关键字',
@@ -672,11 +688,11 @@ CREATE TABLE IF NOT EXISTS `dmt_webbase` (
   UNIQUE KEY `id_UNIQUE` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COMMENT='create by chenpy 2016-12-8\n网站基本信息表';
 
--- 正在导出表  mtadmin.dmt_webbase 的数据：~1 rows (大约)
-/*!40000 ALTER TABLE `dmt_webbase` DISABLE KEYS */;
-INSERT INTO `dmt_webbase` (`id`, `webtitle`, `keyword`, `description`, `copyright`, `icp`, `countcode`, `contactemail`, `contacthotline`, `address`, `hotline`) VALUES
+-- 正在导出表  mtadmin.mt_webbase 的数据：~1 rows (大约)
+/*!40000 ALTER TABLE `mt_webbase` DISABLE KEYS */;
+INSERT INTO `mt_webbase` (`id`, `webtitle`, `keyword`, `description`, `copyright`, `icp`, `countcode`, `contactemail`, `contacthotline`, `address`, `hotline`) VALUES
 	(2, '', '', '', '', '', '', '', '', '', '');
-/*!40000 ALTER TABLE `dmt_webbase` ENABLE KEYS */;
+/*!40000 ALTER TABLE `mt_webbase` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
